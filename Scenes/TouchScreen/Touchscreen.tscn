@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=3 uid="uid://bgaqwhc6e47ym"]
+
+[ext_resource type="Script" path="res://Scripts/Touchscreen/Puck.gd" id="1_osk2q"]
+[ext_resource type="AudioStream" uid="uid://csehxfbjrw6h0" path="res://Audio/SFX/TestMoai/rightDoo.ogg" id="2_3weng"]
+[ext_resource type="AudioStream" uid="uid://quurtsm2oivo" path="res://Audio/SFX/TestMoai/rightPah.ogg" id="3_4n65x"]
+[ext_resource type="AudioStream" uid="uid://bqnngu18de257" path="res://Audio/SFX/TestMoai/rightWop.ogg" id="4_2g2lg"]
+
+[sub_resource type="Gradient" id="Gradient_okhw4"]
+offsets = PackedFloat32Array(0, 0.00649351)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ufwow"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cf8cu"]
+color_ramp = SubResource("Gradient_okhw4")
+noise = SubResource("FastNoiseLite_ufwow")
+
+[node name="Node2D" type="Node2D"]
+position = Vector2(-408, 732)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 600.0
+offset_top = -732.0
+offset_right = 792.0
+offset_bottom = -476.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+color = Color(0, 0.270588, 0.85098, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(467, -627)
+scale = Vector2(0.065, 0.065)
+texture = SubResource("NoiseTexture2D_cf8cu")
+script = ExtResource("1_osk2q")
+quickTapLength = 8
+minSpeed = 0.5
+
+[node name="TestSound" type="Node" parent="Sprite2D"]
+
+[node name="Doo" type="AudioStreamPlayer" parent="Sprite2D/TestSound"]
+stream = ExtResource("2_3weng")
+
+[node name="Pah" type="AudioStreamPlayer" parent="Sprite2D/TestSound"]
+stream = ExtResource("3_4n65x")
+
+[node name="Wop" type="AudioStreamPlayer" parent="Sprite2D/TestSound"]
+stream = ExtResource("4_2g2lg")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(600, -604)
