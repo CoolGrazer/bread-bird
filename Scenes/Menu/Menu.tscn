@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=3 uid="uid://cquyotwy2wum0"]
 
-[ext_resource type="Shader" path="res://Scenes/Menu/Menu.gdshader" id="2_dd2fg"]
+[ext_resource type="Shader" path="res://Shaders/Scroll.gdshader" id="2_77t1x"]
 [ext_resource type="Texture2D" uid="uid://d1ioxui7ljd25" path="res://Graphics/Sprites/Menu/BackgroundRepeat.png" id="3_t5k8y"]
 [ext_resource type="Script" path="res://Scripts/Touchscreen/Puck.gd" id="4_6qb1o"]
 [ext_resource type="AudioStream" uid="uid://cfqnvhb4si1jj" path="res://Audio/Music/1-40 - Game Select 2 (Rhythm Tengoku).mp3" id="4_o0xbd"]
@@ -12,7 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://da5jfcta02kqw" path="res://Audio/SFX/TestSpaceSoccer/highkicktoe3.ogg" id="10_0svvx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b3emo"]
-shader = ExtResource("2_dd2fg")
+shader = ExtResource("2_77t1x")
 shader_parameter/direction = Vector2(1, -1)
 shader_parameter/scrollSpeed = 0.0
 
