@@ -19,3 +19,18 @@ And I'm pretty comfortable in phython anyways.
 
 For a game jam, it sure is gonna take a while. The due date is the 25th of March, so by then this should be complete!
 
+
+> Rhythm Heaven puts the music in your hands and some rhythm in your life. Let the music move you as you tap and slide your stylus on the touch screen to the beat of more than 50 musical rhythm games. The controls are as natural as tapping your finger to music. - Game Description
+
+# To Do's
+
+Songs
+
+Charter/Charting
+
+~~Touchscreen Inputs~~
+
+Art
+
+Menus
+
