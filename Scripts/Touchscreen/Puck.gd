@@ -8,9 +8,11 @@ var justReleased : bool = false
 
 var velocity : Vector2 = Vector2.ZERO
 
+var canSlide : bool = true
+
 var lastGlobalPos : Vector2 = Vector2.ZERO
 
-var actionTypes = ["nothing","justPressed","quickRelease","slide","flick"]
+var actionTypes = ["nothing","justPressed","justReleased","quickRelease","slide","flick","hold"]
 
 var currentAction : String = ""
 
@@ -20,12 +22,16 @@ var framesHeldButton : int = 0
 
 @export var minSpeed : float = 0.0
 
+
+var high : int = 0
+
+signal input(input)
+
 func _physics_process(delta):
 	_touchScreen()
 	
-	#_determineInput()
+	_determineInput()
 	
-	test()
 
 
 
@@ -34,15 +40,22 @@ func _touchScreen():
 	
 	if Input.is_action_just_pressed("Click"):
 		justClicked = true
+		#position = Vector2(694,-606)
+		
+	elif Input.is_action_just_released("Click"):
+		justReleased = true
 	
 	if clicking == true:
+		
+		#position += Input.get_vector("JoyLeft","JoyRight","JoyUp","JoyDown") * 15
+		
 		position = get_global_mouse_position() - get_parent().global_position
+		
 		framesHeldButton += 1
 	elif clicking == false and !velocity == Vector2.ZERO:
 		position += velocity
 	
 	
-	print(get_global_mouse_position() - global_position)
 	
 	
 	if clicking == true:
@@ -57,15 +70,28 @@ func _touchScreen():
 		tween.tween_property(self,"scale",Vector2(0.065,0.065),0.05)
 	else:
 		var tween = get_tree().create_tween()
-		if velocity > Vector2(minSpeed,minSpeed):
-			tween.tween_property(self,"scale",Vector2(0.0,0.0),0.2)
+		if (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
+			tween.tween_property(self,"scale",Vector2(0.0,0.0),0.8).set_trans(Tween.TRANS_LINEAR)
 		else:
-			tween.tween_property(self,"scale",Vector2(0.0,0.0),0.3)
+			velocity = Vector2(0,0)
+			tween.tween_property(self,"scale",Vector2(0.0,0.0),0.3).set_trans(Tween.TRANS_LINEAR)
 	
 	lastGlobalPos = position
+	
 
 func _determineInput():
 	currentAction = "nothing"
+	
+	#if abs(velocity.y) < 1:
+	#	canSlide = true
+	
+	
+	if clicking == true and abs(velocity.y) > 25 and canSlide == true:
+		currentAction = actionTypes[4]
+		#canSlide = false
+	elif clicking == true and justClicked == false:
+		currentAction = actionTypes[6]
+
 	
 	
 	if justClicked == true:
@@ -73,21 +99,23 @@ func _determineInput():
 		justClicked = false
 	
 	
+	if justReleased == true and framesHeldButton < quickTapLength:
+		currentAction = actionTypes[3]
+		justReleased = false
+		framesHeldButton = 0
+	elif justReleased == true and (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
+		
+		currentAction = actionTypes[5]
+		justReleased = false
+	elif justReleased == true:
+		currentAction = actionTypes[2]
+		justReleased = false
+		framesHeldButton = 0
+	
+	
+	emit_signal("input",currentAction)
 	
 	
 
-
-func test():
-	
-	
-	if currentAction == "quickTap":
-		$TestSound/Pah.play()
-	
-	if currentAction == "hold" and $TestSound/Doo.playing == false:
-		$TestSound/Doo.play()
-	elif currentAction == "justReleased" and $TestSound/Wop.playing == false:
-		$TestSound/Wop.play()
-	elif currentAction == "nothing":
-		$TestSound/Doo.stop()
 
 
