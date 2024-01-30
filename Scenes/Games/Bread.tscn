@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://bwnty6oluy5ko"]
+
+[ext_resource type="Texture2D" uid="uid://bj5kt2ftti3jq" path="res://Graphics/Sprites/Bird Bread/Bread.png" id="1_my7em"]
+[ext_resource type="Script" path="res://Scripts/Bread.gd" id="1_ycp16"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gu5o"]
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = ExtResource("1_ycp16")
+
+[node name="Bread" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_my7em")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_4gu5o")

@@ -9,7 +9,7 @@ void vertex() {
 }
 
 void fragment() {
-	COLOR = texture(TEXTURE,(UV * vec2(2,1)) + vec2(direction * -TIME / 60.0 * scrollSpeed));
+	COLOR = texture(TEXTURE,(UV * vec2(2.003,1)) + vec2(direction * -TIME / 60.0 * scrollSpeed));
 }
 
 //void light() {
