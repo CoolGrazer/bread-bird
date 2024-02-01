@@ -1,33 +1,55 @@
 extends StaticBody2D
 
 var velY : float = -5.0
+var velX : float = 0.0
 
+var x : int = 0
 
+var rotSpeed : float = 1.0
 
+var spawnBeat : int = 0
 
+func _ready():
+	spawnBeat = GlobalValues.beatPos
+	x = 0
+	global_position.y = -124
+	velY = -2.5
+	rotation_degrees = randf_range(-360,360)
+	rotSpeed = randi_range(-2,2)
+	if rotSpeed == 0:
+		rotSpeed = -1
 
 func _physics_process(delta):
-	position.x = snapped(position.x,1)
-	
 	
 	position.y += velY
-	velY += 0.3
-	rotation_degrees += 5
+	velY += 0.2
+	rotation_degrees += 5 * rotSpeed
 	
-	if position.y > 285:
-		position.y = 85
-		velY = -5.0
-		position.x = RandomNumberGenerator.new().randf_range(48,48)
+	position.x += velX
+	
+	position.x = snapped(position.x,1)
+	position.y = snapped(position.y,1)
 	
 	# Repsawning this bread leads to reseting of pos
 	
-	print(position.x)
-	if !position.x == 96:
-		var tween = get_tree().create_tween()
-		tween.tween_property(self,"position:x",96,0.5).set_ease(Tween.EASE_IN_OUT)
-	else:
-		pass
+	#print(x)
 	
 	
+
+
+func _on_audio_stream_player_beat(beat):
 	
-	#print(position.x)
+	if fmod(beat,1) == 0:
+		$Kick.play()
+	
+	
+	if position == Vector2(96,116):
+		print(beat)
+	
+	if beat == spawnBeat + 2:
+		print(position)
+		velY = -5.0
+		velX = RandomNumberGenerator.new().randf_range(-5,5)
+	
+	#if fmod(beat,1) == 0:
+	#	print(position)

@@ -5,3 +5,4 @@ var secPerBeat : float = 0.0
 var beatsBStart : float = 0.0
 var positionofSong : float = 0.0
 var isPlaying : bool = false
+var beatPos : int = 0

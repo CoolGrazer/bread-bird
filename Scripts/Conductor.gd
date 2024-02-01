@@ -16,7 +16,7 @@ var measured = 0
 
 
 
-signal beat(position)
+signal beat(beat)
 signal measure(position)
 signal songPos(position)
 signal secBeat(position)
@@ -55,7 +55,7 @@ func _report_beat():
 		
 		
 		emit_signal("beat",song_position_in_beats)
-		
+		GlobalValues.beatPos = song_position_in_beats
 		#print(song_position_in_beats)
 		
 		
