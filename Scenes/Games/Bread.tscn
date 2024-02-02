@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bwnty6oluy5ko"]
+[gd_scene load_steps=8 format=3 uid="uid://bwnty6oluy5ko"]
 
 [ext_resource type="Texture2D" uid="uid://bj5kt2ftti3jq" path="res://Graphics/Sprites/Bird Bread/Bread.png" id="1_my7em"]
 [ext_resource type="Script" path="res://Scripts/Bread.gd" id="1_ycp16"]
-[ext_resource type="AudioStream" uid="uid://bom2qdgwqih34" path="res://Audio/SFX/TestSpaceSoccer/kick.ogg" id="3_cw3ml"]
+[ext_resource type="AudioStream" uid="uid://jp7we80quyqw" path="res://Audio/SFX/Breadbird/swallow.wav" id="3_r046d"]
+[ext_resource type="AudioStream" uid="uid://ddjtgm4wxv621" path="res://Audio/SFX/Breadbird/ThrowInCue.wav" id="4_rmpqf"]
 
 [sub_resource type="Shader" id="Shader_6dcbb"]
 code = "shader_type canvas_item;
@@ -38,7 +39,8 @@ texture = ExtResource("1_my7em")
 shape = SubResource("RectangleShape2D_4gu5o")
 
 [node name="Kick" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_cw3ml")
+stream = ExtResource("3_r046d")
+volume_db = 10.0
 
-[node name="Kick2" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_cw3ml")
+[node name="Spawn" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_rmpqf")

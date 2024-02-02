@@ -59,6 +59,10 @@ JoyRight={
 ]
 }
 
+[physics]
+
+common/physics_jitter_fix=0.0
+
 [rendering]
 
 rendering_device/driver="opengl3"
