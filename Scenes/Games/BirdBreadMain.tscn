@@ -1,38 +1,39 @@
-[gd_scene load_steps=11 format=3 uid="uid://bax5tbfh5lmnq"]
+[gd_scene load_steps=10 format=3 uid="uid://bax5tbfh5lmnq"]
 
 [ext_resource type="PackedScene" uid="uid://bgaqwhc6e47ym" path="res://Scenes/TouchScreen/Touchscreen.tscn" id="1_kaxx8"]
-[ext_resource type="PackedScene" uid="uid://bwnty6oluy5ko" path="res://Scenes/Games/Bread.tscn" id="2_04fcc"]
 [ext_resource type="AudioStream" uid="uid://cfqnvhb4si1jj" path="res://Audio/Music/1-40 - Game Select 2 (Rhythm Tengoku).mp3" id="3_0keqi"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="4_18jff"]
 [ext_resource type="Shader" path="res://Shaders/BackgroundColor.gdshader" id="5_5n41h"]
 [ext_resource type="Texture2D" uid="uid://dfiywg3braf3n" path="res://Graphics/Sprites/Bird Bread/BirbBack.png" id="6_tuwtf"]
+[ext_resource type="PackedScene" uid="uid://bwnty6oluy5ko" path="res://Scenes/Games/Bread.tscn" id="7_cl2nu"]
 [ext_resource type="Texture2D" uid="uid://bgy4ajmk8508h" path="res://Graphics/Sprites/Bird Bread/BirdPlaceHolder.png" id="7_wramj"]
+
+[sub_resource type="GDScript" id="GDScript_2opw4"]
+resource_name = "World"
+script/source = "extends Node2D
+
+var bread = preload(\"res://Scenes/Games/Bread.tscn\")
+
+func _ready():
+	var b = bread.instantiate()
+	$SubViewport.add_child(b)
+
+# Fix subviewport
+
+#func _on_audio_stream_player_beat(beat):
+#	if fmod(beat,2) == 0:
+#		var b = bread.instantiate()
+#		$SubViewport.add_child(b)
+	
+	
+"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qiymf"]
 shader = ExtResource("5_5n41h")
 shader_parameter/bgColor = Color(0.517647, 0.494118, 0.529412, 1)
 
-[sub_resource type="Shader" id="Shader_taoxk"]
-code = "shader_type canvas_item;
-
-void vertex() {
-	VERTEX.y += sin(TIME * 7.5) * 3.0;
-}
-
-void fragment() {
-	// Called for every pixel the material is visible on.
-}
-
-//void light() {
-	// Called for every pixel for every light affecting the CanvasItem.
-	// Uncomment to replace the default light processing function with this one.
-//}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_me7jf"]
-shader = SubResource("Shader_taoxk")
-
 [node name="Node2D" type="Node2D"]
+script = SubResource("GDScript_2opw4")
 
 [node name="Background" type="Sprite2D" parent="."]
 texture_filter = 1
@@ -44,21 +45,6 @@ hframes = 5
 
 [node name="SubViewport" parent="." instance=ExtResource("1_kaxx8")]
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-z_index = 1
-texture_filter = 1
-offset_right = 384.0
-offset_bottom = 256.0
-
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(384, 256)
-render_target_update_mode = 4
-
-[node name="StaticBody2D" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_04fcc")]
-position = Vector2(96, -124)
-
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_0keqi")
 volume_db = -80.0
@@ -67,8 +53,10 @@ script = ExtResource("4_18jff")
 
 [node name="BirdPlaceHolder" type="Sprite2D" parent="."]
 texture_filter = 1
-material = SubResource("ShaderMaterial_me7jf")
 position = Vector2(88, 146)
 texture = ExtResource("7_wramj")
 
-[connection signal="beat" from="AudioStreamPlayer" to="SubViewportContainer/SubViewport/StaticBody2D" method="_on_audio_stream_player_beat"]
+[node name="StaticBody2D" parent="." instance=ExtResource("7_cl2nu")]
+position = Vector2(96, 46)
+
+[connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]

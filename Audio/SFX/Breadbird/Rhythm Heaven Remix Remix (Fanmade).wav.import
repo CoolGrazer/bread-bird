@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b6s7c0l4c0uuo"
+path="res://.godot/imported/Rhythm Heaven Remix Remix (Fanmade).wav-1da9e23f580b3ec4bc2bf8a92897dcf6.sample"
+
+[deps]
+
+source_file="res://Audio/SFX/Breadbird/Rhythm Heaven Remix Remix (Fanmade).wav"
+dest_files=["res://.godot/imported/Rhythm Heaven Remix Remix (Fanmade).wav-1da9e23f580b3ec4bc2bf8a92897dcf6.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
