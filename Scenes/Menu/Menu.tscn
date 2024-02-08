@@ -8,8 +8,8 @@
 [ext_resource type="Script" path="res://Scripts/SoundTest.gd" id="6_a8kk5"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="6_j56dj"]
 [ext_resource type="AudioStream" uid="uid://bom2qdgwqih34" path="res://Audio/SFX/TestSpaceSoccer/kick.ogg" id="7_5yn3g"]
-[ext_resource type="AudioStream" uid="uid://c3m2aggh1lnt7" path="res://Audio/SFX/TestSpaceSoccer/highkicktoe1.ogg" id="8_lk7pk"]
 [ext_resource type="AudioStream" uid="uid://donfct8v7mglc" path="res://Audio/SFX/TestSpaceSoccer/highkicktoe2.ogg" id="9_87cyn"]
+[ext_resource type="AudioStream" uid="uid://dmqr3tloawlmr" path="res://Audio/SFX/CountIn/Go.wav" id="9_rebdl"]
 [ext_resource type="AudioStream" uid="uid://da5jfcta02kqw" path="res://Audio/SFX/TestSpaceSoccer/highkicktoe3.ogg" id="10_0svvx"]
 
 [sub_resource type="GDScript" id="GDScript_kqqt0"]
@@ -115,7 +115,7 @@ script = ExtResource("6_a8kk5")
 stream = ExtResource("7_5yn3g")
 
 [node name="High" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("8_lk7pk")
+stream = ExtResource("9_rebdl")
 
 [node name="HighKick" type="AudioStreamPlayer" parent="SoundTest"]
 stream = ExtResource("9_87cyn")
