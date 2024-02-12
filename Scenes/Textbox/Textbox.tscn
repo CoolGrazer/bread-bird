@@ -1,0 +1,131 @@
+[gd_scene load_steps=9 format=3 uid="uid://d0gjm37w0o08j"]
+
+[ext_resource type="Texture2D" uid="uid://dh8q4roy1bfv4" path="res://Graphics/Sprites/TextboxYou/Small.png" id="1_0o6lc"]
+[ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="2_gee6b"]
+[ext_resource type="Texture2D" uid="uid://bkl11bri0r27f" path="res://Graphics/Sprites/TextboxYou/Medium.png" id="3_x66eo"]
+[ext_resource type="Texture2D" uid="uid://ddgebqdt6vcuo" path="res://Graphics/Sprites/TextboxYou/Large.png" id="4_htj0h"]
+[ext_resource type="AudioStream" uid="uid://blsfg2g87728s" path="res://Audio/SFX/CountIn/textAdvanceStart.ogg" id="5_aexc3"]
+[ext_resource type="AudioStream" uid="uid://bkdn45x1lo4wj" path="res://Audio/SFX/CountIn/textAdvanceEnd.ogg" id="6_ffjbu"]
+
+[sub_resource type="GDScript" id="GDScript_l54ak"]
+resource_name = "Textbox"
+script/source = "extends Node2D
+
+@export var TextDoTo : Array[String]
+@export var SizeToDo : Array[int]
+
+@export var Enable : Array[bool]
+
+var indx : int = 0
+
+var textOn : bool = true
+
+signal Enabled(enabled)
+
+func _ready():
+	_text(TextDoTo[indx],SizeToDo[indx],Enable[indx])
+	indx += 1
+
+func _physics_process(delta):
+	if Input.is_action_just_pressed(\"Click\") and textOn == true:
+		$Start.play()
+	
+	if Input.is_action_just_released(\"Click\") and indx < TextDoTo.size() and textOn == true:
+		_text(TextDoTo[indx],SizeToDo[indx],Enable[indx])
+		indx += 1
+		$Stop.play()
+
+
+
+
+func _text(text,size,enabled):
+	$Small.hide()
+	$Medium.hide()
+	$Large.hide()
+	
+	if size == 0:
+		$Small.show()
+		$Small/Label.text = text
+	elif size == 1:
+		$Medium.show()
+		$Medium/Label.text = text
+	elif size == 2:
+		$Large.show()
+		$Large/Label.text = text
+	
+	emit_signal(\"Enabled\",enabled)
+	
+	if enabled == true:
+		textOn = false
+	if enabled == false:
+		textOn = true
+	
+"
+
+[sub_resource type="FontVariation" id="FontVariation_tktow"]
+base_font = ExtResource("2_gee6b")
+spacing_glyph = -6
+
+[node name="Textbox" type="Node2D"]
+script = SubResource("GDScript_l54ak")
+TextDoTo = Array[String](["Press on your touch screen to continue.", "Welcome to <good game title>!", "Since this is your first time, we'll start simple.", "See that coin? Try pressing on it!", ""])
+SizeToDo = Array[int]([0, 0, 0, 0, 4])
+Enable = Array[bool]([false, false, false, false, true])
+
+[node name="Small" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("1_0o6lc")
+
+[node name="Label" type="Label" parent="Small"]
+texture_filter = 1
+offset_left = -92.0
+offset_top = -20.0
+offset_right = 92.0
+offset_bottom = 20.0
+theme_override_fonts/font = SubResource("FontVariation_tktow")
+text = "It's always such a pleasure!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Medium" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("3_x66eo")
+
+[node name="Label" type="Label" parent="Medium"]
+texture_filter = 1
+offset_left = -92.0
+offset_top = -28.0
+offset_right = 92.0
+offset_bottom = 28.0
+theme_override_fonts/font = SubResource("FontVariation_tktow")
+text = "You told me, dreams come true!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Large" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("4_htj0h")
+
+[node name="Label" type="Label" parent="Large"]
+texture_filter = 1
+offset_left = -92.0
+offset_top = -48.0
+offset_right = 92.0
+offset_bottom = 48.0
+theme_override_fonts/font = SubResource("FontVariation_tktow")
+text = "You told me, dreams come true? Yeah yeah yeah! Yeah yeah yeah!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+justification_flags = 162
+
+[node name="Start" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_aexc3")
+
+[node name="Stop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_ffjbu")

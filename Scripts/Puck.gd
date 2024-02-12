@@ -18,9 +18,13 @@ var currentAction : String = ""
 
 @export var quickTapLength : int = 2
 
-var framesHeldButton : int = 0
+var framesHeldButton : int = 99
 
 @export var minSpeed : float = 0.0
+
+@export var disabled : bool = false
+
+var compensatedVel : Vector2 = Vector2.ZERO
 
 
 var high : int = 0
@@ -28,18 +32,27 @@ var high : int = 0
 signal input(input)
 
 func _physics_process(delta):
+	if disabled == true:
+		return
+	
 	_touchScreen()
 	
 	_determineInput()
-	
 
 
 
 func _touchScreen():
+	
 	clicking = Input.is_action_pressed("Click")
+	
+	
+	
+	
 	
 	if Input.is_action_just_pressed("Click"):
 		justClicked = true
+		framesHeldButton = 0
+		hide()
 		#position = Vector2(694,-606)
 		
 	elif Input.is_action_just_released("Click"):
@@ -49,7 +62,11 @@ func _touchScreen():
 		
 		#position += Input.get_vector("JoyLeft","JoyRight","JoyUp","JoyDown") * 15
 		
-		position = get_global_mouse_position() - get_parent().global_position
+		position = get_global_mouse_position()
+		
+		#$Face.position = get_global_mouse_position() - get_parent().global_position
+		
+		$Face.position = velocity * 0.4
 		
 		framesHeldButton += 1
 	elif clicking == false and !velocity == Vector2.ZERO:
@@ -57,26 +74,111 @@ func _touchScreen():
 	
 	
 	
-	
 	if clicking == true:
-		position.x = clamp(position.x,617,775)
-		position.y = clamp(position.y,-715,-493)
+		position.x = clamp(position.x,220,360)
+		position.y = clamp(position.y,24,232)
+	
 	
 	velocity = position - lastGlobalPos
 	
+	if (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
+		compensatedVel = velocity
+	
 	
 	if clicking == true:
-		var tween = get_tree().create_tween()
-		tween.tween_property(self,"scale",Vector2(0.065,0.065),0.05)
+		pass
 	else:
-		var tween = get_tree().create_tween()
 		if (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
-			tween.tween_property(self,"scale",Vector2(0.0,0.0),0.8).set_trans(Tween.TRANS_LINEAR)
+			pass
 		else:
 			velocity = Vector2(0,0)
-			tween.tween_property(self,"scale",Vector2(0.0,0.0),0.3).set_trans(Tween.TRANS_LINEAR)
+			pass
 	
 	lastGlobalPos = position
+	
+	#if fmod(framesHeldButton,3) == 0:
+	#	if $Face.frame == 6:
+	#		$Face.frame = 7
+	#	elif $Face.frame == 7:
+	#		$Face.frame = 8
+	#	elif $Face.frame == 8:
+	#		$Face.frame = 7
+	
+	$Face.frame = round(sin(Engine.get_physics_frames() / 3.0) + 7)
+	
+	if framesHeldButton == 0:
+		#hide()
+		$Face.hide()
+		#frame = 6
+	
+	if framesHeldButton == 3:
+		show()
+		$Face.show()
+		frame = 5
+	elif framesHeldButton == 4:
+		$Eyes.show()
+		$Eyes.position = Vector2(0,-9)
+		frame -= 1
+	elif framesHeldButton == 5:
+		$Eyes.position = Vector2(0,-13)
+		frame -= 1
+	elif framesHeldButton == 6:
+		$Eyes.position = Vector2(0,-17)
+		frame -= 1
+	elif framesHeldButton == 7:
+		$Eyes.position = Vector2(0,-21)
+		frame -= 1
+	elif framesHeldButton == 8:
+		$Eyes.position = Vector2(0,-30)
+		
+	elif framesHeldButton == 9:
+		$Eyes.position = Vector2(0,-36)
+		
+	
+	
+	
+	
+	
+	if clicking == false and frame < 5 and not (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
+		
+		if fmod(Engine.get_frames_drawn(),2) == 0 and !framesHeldButton == 99:
+			$Face.hide()
+			frame += 1
+			$Eyes.position.y += 5
+		elif fmod(Engine.get_frames_drawn(),2) == 0 and framesHeldButton == 99:
+			$Face.hide()
+			frame += 1
+			$Eyes.position.y += 5
+		
+		
+		
+		if frame == 5:
+			$Eyes.hide()
+			hide()
+	elif clicking == false and frame < 5:
+		
+		$Face.hide()
+		if fmod(Engine.get_frames_drawn(),4) == 0:
+			frame += 1
+			$Eyes.position.y += 5
+		
+		if frame == 5:
+			$Eyes.hide()
+			hide()
+	
+	if clicking == false and currentAction == "quickRelease":
+		
+		
+		frame = 0
+		#$Eyes.position = Vector2(0,-36)
+		$Face.hide()
+		$Eyes.show()
+		$Eyes.position = Vector2(0,-36)
+		#$Eyes.hide()
+		framesHeldButton = 99
+		velocity = Vector2(0,0)
+	
+	
 	
 
 func _determineInput():
@@ -86,7 +188,7 @@ func _determineInput():
 	#	canSlide = true
 	
 	
-	if clicking == true and abs(velocity.y) > 25 and canSlide == true:
+	if clicking == true and abs(velocity.y) > 0 and canSlide == true:
 		currentAction = actionTypes[4]
 		#canSlide = false
 	elif clicking == true and justClicked == false:
@@ -119,3 +221,6 @@ func _determineInput():
 
 
 
+
+func _on_textbox_enabled(enabled):
+	disabled = not enabled

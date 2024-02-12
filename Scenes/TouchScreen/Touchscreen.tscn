@@ -1,26 +1,97 @@
-[gd_scene load_steps=5 format=3 uid="uid://bgaqwhc6e47ym"]
+[gd_scene load_steps=7 format=3 uid="uid://bgaqwhc6e47ym"]
 
+[ext_resource type="Texture2D" uid="uid://cn7xivfd7x61n" path="res://Graphics/Sprites/Touchscreen/TouchScreen.png" id="1_jhfe4"]
 [ext_resource type="Script" path="res://Scripts/Puck.gd" id="1_osk2q"]
 
-[sub_resource type="Gradient" id="Gradient_okhw4"]
-offsets = PackedFloat32Array(0, 0.00649351)
+[sub_resource type="Shader" id="Shader_qg1yk"]
+code = "shader_type canvas_item;
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ufwow"]
+uniform vec4 ogColor : source_color = vec4(0.094,0.161,0.031,1.0);
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cf8cu"]
-color_ramp = SubResource("Gradient_okhw4")
-noise = SubResource("FastNoiseLite_ufwow")
+uniform vec4 color : source_color;
 
-[node name="Node2D" type="Node2D"]
-position = Vector2(-408, 732)
+uniform vec4 offset;
 
-[node name="Puck" type="Sprite2D" parent="."]
-position = Vector2(699, -611)
-scale = Vector2(0.065, 0.065)
-texture = SubResource("NoiseTexture2D_cf8cu")
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	if (COLOR == ogColor)
+	{
+		COLOR = color + offset;
+	}
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c1jdn"]
+shader = SubResource("Shader_qg1yk")
+shader_parameter/ogColor = Color(0.870588, 1, 0.870588, 1)
+shader_parameter/color = Color(0.870588, 1, 0.870588, 1)
+shader_parameter/offset = Vector4(0, 0, 0, 0)
+
+[sub_resource type="Shader" id="Shader_ibyqi"]
+code = "shader_type canvas_item;
+
+uniform vec4 ogColor : source_color = vec4(0.094,0.161,0.031,1.0);
+
+uniform vec4 color : source_color;
+
+uniform vec4 offset;
+
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	if (COLOR == ogColor)
+	{
+		COLOR = color + offset;
+	}
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6ugdg"]
+shader = SubResource("Shader_ibyqi")
+shader_parameter/ogColor = Color(0.352941, 0.678431, 0.0627451, 1)
+shader_parameter/color = Color(0.352941, 0.678431, 0.0627451, 1)
+shader_parameter/offset = Vector4(0, 0, 0, 0)
+
+[node name="Puck" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_jhfe4")
+hframes = 7
+vframes = 2
 script = ExtResource("1_osk2q")
 quickTapLength = 8
-minSpeed = 0.2
+minSpeed = 10.0
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(600, -604)
+[node name="Eyes" type="Sprite2D" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_c1jdn")
+position = Vector2(0, -36)
+texture = ExtResource("1_jhfe4")
+hframes = 7
+vframes = 2
+frame = 9
+
+[node name="Face" type="Sprite2D" parent="."]
+z_index = 2
+texture_filter = 1
+material = SubResource("ShaderMaterial_6ugdg")
+texture = ExtResource("1_jhfe4")
+hframes = 7
+vframes = 2
+frame = 8

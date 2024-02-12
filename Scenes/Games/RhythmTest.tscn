@@ -1,3 +1,201 @@
-[gd_scene format=3 uid="uid://b55hqnsvt2xt5"]
+[gd_scene load_steps=21 format=3 uid="uid://b55hqnsvt2xt5"]
+
+[ext_resource type="Texture2D" uid="uid://s2mmvrk7b62b" path="res://Graphics/Sprites/RhythmTest/Coin.png" id="5_li6vq"]
+[ext_resource type="PackedScene" uid="uid://bgaqwhc6e47ym" path="res://Scenes/TouchScreen/Touchscreen.tscn" id="6_4xcnk"]
+[ext_resource type="AudioStream" uid="uid://cx7qsdfsdyvp6" path="res://Audio/SFX/RhythmTest/Press.wav" id="6_88df2"]
+[ext_resource type="Script" path="res://Scenes/Games/InputHandler.gd" id="6_j64fe"]
+[ext_resource type="AudioStream" uid="uid://bbv27u5b3s0e6" path="res://Audio/SFX/RhythmTest/Release.wav" id="7_kocvc"]
+[ext_resource type="PackedScene" uid="uid://d0gjm37w0o08j" path="res://Scenes/Textbox/Textbox.tscn" id="7_x62lt"]
+[ext_resource type="AudioStream" uid="uid://cpuotypdffxve" path="res://Audio/SFX/RhythmTest/Slide.wav" id="8_o7vrl"]
+
+[sub_resource type="GDScript" id="GDScript_s01wj"]
+resource_name = "RhythmTest"
+script/source = "extends Node2D
+
+var timesLeft : int = 10
+
+func _ready():
+	pass
+
+func _physics_process(delta):
+	if timesLeft == 0:
+		timesLeft = 10
+		$Textbox._text($Textbox.TextDoTo[$Textbox.indx],$Textbox.SizeToDo[$Textbox.indx],$Textbox.Enable[$Textbox.indx])
+		$Textbox.indx += 1
+
+
+
+
+func _on_puck_input(input):
+	print(timesLeft)
+	if $Textbox.indx == 5 and input == \"justReleased\":
+		timesLeft -= 1
+	
+	if $Textbox.indx == 12:
+		$Puck.minSpeed = 5
+	if $Textbox.indx == 12 and input == \"flick\":
+		timesLeft -= 1
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x44ow"]
+
+[sub_resource type="Gradient" id="Gradient_ld3qj"]
+offsets = PackedFloat32Array(0, 0.929919)
+colors = PackedColorArray(0.0859901, 0.0800717, 0.139064, 1, 0.0859901, 0.0800717, 0.139064, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f7d1v"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3u2a5"]
+width = 256
+height = 192
+color_ramp = SubResource("Gradient_ld3qj")
+noise = SubResource("FastNoiseLite_f7d1v")
+
+[sub_resource type="Gradient" id="Gradient_khm8y"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.133333, 0.12549, 0.203922, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dolcp"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ahugi"]
+width = 256
+height = 192
+color_ramp = SubResource("Gradient_khm8y")
+noise = SubResource("FastNoiseLite_dolcp")
+
+[sub_resource type="Animation" id="Animation_5mdgw"]
+resource_name = "PressDown"
+length = 0.15
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Coin:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.075, 0.15),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_g4lq1"]
+resource_name = "Release"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Coin:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_jq1yl"]
+resource_name = "Flick"
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Coin:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.075, 0.675, 0.725, 0.775, 0.825, 0.875, 0.925, 0.975),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+}
+
+[sub_resource type="Animation" id="Animation_ak5qr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Coin:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1in81"]
+_data = {
+"Flick": SubResource("Animation_jq1yl"),
+"PressDown": SubResource("Animation_5mdgw"),
+"RESET": SubResource("Animation_ak5qr"),
+"Release": SubResource("Animation_g4lq1")
+}
 
 [node name="RhythmTest" type="Node2D"]
+script = SubResource("GDScript_s01wj")
+
+[node name="Puck" parent="." instance=ExtResource("6_4xcnk")]
+visible = false
+z_index = 8
+position = Vector2(225, 21)
+minSpeed = 999999.0
+disabled = true
+
+[node name="RhythmTest2" type="Sprite2D" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_x44ow")
+position = Vector2(292, 128)
+scale = Vector2(7.14286, 1.33333)
+texture = SubResource("NoiseTexture2D_3u2a5")
+hframes = 9
+
+[node name="RhythmTest3" type="Sprite2D" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_x44ow")
+position = Vector2(100, 128)
+scale = Vector2(7.14286, 1.33333)
+texture = SubResource("NoiseTexture2D_ahugi")
+hframes = 9
+
+[node name="Input" type="Node" parent="."]
+script = ExtResource("6_j64fe")
+
+[node name="Coin" type="Sprite2D" parent="Input"]
+z_index = 2
+texture_filter = 1
+position = Vector2(96, 136)
+texture = ExtResource("5_li6vq")
+hframes = 14
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Input"]
+libraries = {
+"": SubResource("AnimationLibrary_1in81")
+}
+
+[node name="Press" type="AudioStreamPlayer" parent="Input"]
+stream = ExtResource("6_88df2")
+
+[node name="Release" type="AudioStreamPlayer" parent="Input"]
+stream = ExtResource("7_kocvc")
+
+[node name="Flick" type="AudioStreamPlayer" parent="Input"]
+stream = ExtResource("8_o7vrl")
+volume_db = -12.578
+
+[node name="CoinCatch" type="AudioStreamPlayer" parent="Input"]
+stream = ExtResource("8_o7vrl")
+volume_db = -18.276
+
+[node name="Textbox" parent="." instance=ExtResource("7_x62lt")]
+position = Vector2(99, 25)
+TextDoTo = Array[String](["Press on your touch screen to continue.", "Welcome to <good game title>!", "Since this is your first time, we'll start simple.", "See that coin? Try pressing on it!", "", "Nice!", "That's the power of TAPPING and HOLDING!", "Now it's time for something tricky.", "The FLICK.", "Imagine drawing the line on a checkmark.", "Use it to send this coin flying!", ""])
+SizeToDo = Array[int]([0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 4])
+Enable = Array[bool]([false, false, false, false, true, false, false, false, false, false, false, true])
+
+[connection signal="input" from="Puck" to="." method="_on_puck_input"]
+[connection signal="input" from="Puck" to="Input" method="_on_puck_input"]
+[connection signal="Enabled" from="Textbox" to="Puck" method="_on_textbox_enabled"]

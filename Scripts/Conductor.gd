@@ -21,7 +21,6 @@ signal measure(position)
 signal songPos(position)
 signal secBeat(position)
 
-var timeBetweenHits : float = 0.0
 
 
 
@@ -42,7 +41,12 @@ func _physics_process(delta):
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
 		
-		song_position_in_beats = _floorto((song_position / sec_per_beat),0.25) + beats_before_start
+		song_position_in_beats = _floorto((song_position / sec_per_beat),0.25)
+		
+		GlobalValues.trueBeat = song_position / sec_per_beat
+		
+		if song_position_in_beats == 0:
+			last_reported_beat = -1
 		
 		_report_beat()
 		emit_signal("songPos",song_position)
@@ -50,18 +54,15 @@ func _physics_process(delta):
 
 func _report_beat():
 	if last_reported_beat < song_position_in_beats:
-		timeBetweenHits = 0
 		last_reported_beat = song_position_in_beats
+		
+		#print(song_position_in_beats)
 		
 		
 		emit_signal("beat",song_position_in_beats)
 		
 		GlobalValues.beatPos = song_position_in_beats
-		#print(song_position_in_beats)
 		
-		
-	else:
-		timeBetweenHits += 1
 		
 
 func restart():

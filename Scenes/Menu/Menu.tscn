@@ -1,5 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://cquyotwy2wum0"]
 
+[ext_resource type="Texture2D" uid="uid://cn7xivfd7x61n" path="res://Graphics/Sprites/Touchscreen/TouchScreen.png" id="1_id7g2"]
 [ext_resource type="Shader" path="res://Shaders/Scroll.gdshader" id="2_77t1x"]
 [ext_resource type="Texture2D" uid="uid://d1ioxui7ljd25" path="res://Graphics/Sprites/Menu/BackgroundRepeat.png" id="3_t5k8y"]
 [ext_resource type="Script" path="res://Scripts/Puck.gd" id="4_6qb1o"]
@@ -8,9 +9,10 @@
 [ext_resource type="Script" path="res://Scripts/SoundTest.gd" id="6_a8kk5"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="6_j56dj"]
 [ext_resource type="AudioStream" uid="uid://bom2qdgwqih34" path="res://Audio/SFX/TestSpaceSoccer/kick.ogg" id="7_5yn3g"]
-[ext_resource type="AudioStream" uid="uid://donfct8v7mglc" path="res://Audio/SFX/TestSpaceSoccer/highkicktoe2.ogg" id="9_87cyn"]
 [ext_resource type="AudioStream" uid="uid://dmqr3tloawlmr" path="res://Audio/SFX/CountIn/Go.wav" id="9_rebdl"]
-[ext_resource type="AudioStream" uid="uid://da5jfcta02kqw" path="res://Audio/SFX/TestSpaceSoccer/highkicktoe3.ogg" id="10_0svvx"]
+[ext_resource type="AudioStream" uid="uid://c7bdc0bxqtk60" path="res://Audio/SFX/CountIn/one.wav" id="11_5hxlu"]
+[ext_resource type="AudioStream" uid="uid://cvqlndv7726qv" path="res://Audio/SFX/CountIn/And.wav" id="11_d0dqo"]
+[ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="12_sua2s"]
 
 [sub_resource type="GDScript" id="GDScript_kqqt0"]
 script/source = "extends Sprite2D
@@ -29,8 +31,8 @@ func _physics_process(delta):
 
 func _bop():
 	rotation_degrees = 12 * bopDir
-	scale.x = 1.3
-	scale.y = 1.3
+	scale.x = randf_range(1.1,1.5)
+	scale.y = randf_range(1.1,1.5)
 	
 
 
@@ -47,14 +49,9 @@ shader = ExtResource("2_77t1x")
 shader_parameter/direction = Vector2(1, -1)
 shader_parameter/scrollSpeed = 0.0
 
-[sub_resource type="Gradient" id="Gradient_okhw4"]
-offsets = PackedFloat32Array(0, 0.00649351)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ufwow"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cf8cu"]
-color_ramp = SubResource("Gradient_okhw4")
-noise = SubResource("FastNoiseLite_ufwow")
+[sub_resource type="FontVariation" id="FontVariation_v2u7l"]
+base_font = ExtResource("12_sua2s")
+spacing_glyph = -6
 
 [node name="Node2D" type="Node2D"]
 position = Vector2(0, -1)
@@ -78,31 +75,51 @@ position = Vector2(97, 100)
 texture = ExtResource("5_d332a")
 script = SubResource("GDScript_kqqt0")
 
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(-408, 732)
+
+[node name="Puck" type="Sprite2D" parent="Node2D"]
+z_index = 1
+texture_filter = 1
+position = Vector2(699, -611)
+texture = ExtResource("1_id7g2")
+hframes = 7
+vframes = 2
+script = ExtResource("4_6qb1o")
+quickTapLength = 8
+minSpeed = 0.01
+
+[node name="Eyes" type="Sprite2D" parent="Node2D/Puck"]
+z_index = 1
+texture_filter = 1
+position = Vector2(0, -36)
+texture = ExtResource("1_id7g2")
+hframes = 7
+vframes = 2
+frame = 9
+
+[node name="Face" type="Sprite2D" parent="Node2D/Puck"]
+visible = false
+z_index = 2
+texture_filter = 1
+texture = ExtResource("1_id7g2")
+hframes = 7
+vframes = 2
+frame = 8
+
+[node name="Camera2D" type="Camera2D" parent="Node2D"]
+position = Vector2(600, -604)
+
 [node name="BackgroundRepeat" type="Sprite2D" parent="."]
 texture_filter = 1
 texture_repeat = 2
 material = SubResource("ShaderMaterial_b3emo")
-position = Vector2(191.751, 128.494)
-scale = Vector2(2.013, 1.01)
+position = Vector2(191.876, 128.247)
+scale = Vector2(2.01, 0.998)
 texture = ExtResource("3_t5k8y")
-
-[node name="TouchScren" type="Node2D" parent="."]
-position = Vector2(-408, 732)
-
-[node name="Puck" type="Sprite2D" parent="TouchScren"]
-position = Vector2(699, -611)
-scale = Vector2(0.065, 0.065)
-texture = SubResource("NoiseTexture2D_cf8cu")
-script = ExtResource("4_6qb1o")
-quickTapLength = 8
-minSpeed = 0.2
-
-[node name="Camera2D" type="Camera2D" parent="TouchScren"]
-position = Vector2(600, -604)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_o0xbd")
-volume_db = -2.0
 autoplay = true
 script = ExtResource("6_j56dj")
 bpm = 105.0
@@ -115,14 +132,31 @@ script = ExtResource("6_a8kk5")
 stream = ExtResource("7_5yn3g")
 
 [node name="High" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("9_rebdl")
+stream = ExtResource("11_5hxlu")
 
 [node name="HighKick" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("9_87cyn")
+stream = ExtResource("11_d0dqo")
 
 [node name="Toe" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("10_0svvx")
+stream = ExtResource("9_rebdl")
 
-[connection signal="input" from="TouchScren/Puck" to="SoundTest" method="_on_puck_input"]
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = 1
+offset_left = -6.0
+offset_top = -11.0
+offset_right = 419.0
+offset_bottom = 269.0
+color = Color(0, 0, 0, 0)
+
+[node name="Label" type="Label" parent="."]
+texture_filter = 1
+offset_left = -2.0
+offset_top = -1.0
+offset_right = 108.0
+offset_bottom = 22.0
+theme_override_fonts/font = SubResource("FontVariation_v2u7l")
+text = "Think you can keep up with me?"
+
+[connection signal="input" from="Node2D/Puck" to="SoundTest" method="_on_puck_input"]
 [connection signal="beat" from="Music" to="SubViewportContainer/SubViewport/Logo" method="_on_music_beat"]
 [connection signal="beat" from="Music" to="SoundTest" method="_on_music_beat"]
