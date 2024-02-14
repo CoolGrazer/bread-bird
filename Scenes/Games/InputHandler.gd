@@ -30,21 +30,30 @@ func _calculateOffBeat():
 	
 	
 	
-
+func _fadeOut():
+	
+	$Flick.volume_db -= 3
 
 
 func _on_puck_input(input):
 	print($Release.playing)
 	if $Coin.frame == 12:
-		$Flick.stop()
 		$Release.play()
 		
 	
+	if $Coin.frame > 12:
+		_fadeOut()
+	
+	if $Coin.frame > 7 and $Coin.frame < 12:
+		$Flick.pitch_scale -= 0.01
+	
+	
 	if input == "flick":
+		$Flick.pitch_scale = 1
 		$AnimationPlayer.stop()
 		$AnimationPlayer.play("Flick")
 		$Flick.play()
-		$Flick.seek(1.58)
+		$Flick.volume_db = 0
 		$CoinCatch.play()
 	
 	#if input == "slide" and $Flick.playing == false:
