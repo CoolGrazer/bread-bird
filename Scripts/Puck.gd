@@ -71,8 +71,9 @@ func _touchScreen():
 		framesHeldButton += 1
 	elif clicking == false and !velocity == Vector2.ZERO:
 		position += velocity
+		#velocity = lerp(velocity,Vector2.ZERO,10)
 	
-	
+	print(velocity)
 	
 	if clicking == true:
 		position.x = clamp(position.x,220,360)
@@ -81,8 +82,6 @@ func _touchScreen():
 	
 	velocity = position - lastGlobalPos
 	
-	if (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
-		compensatedVel = velocity
 	
 	
 	if clicking == true:

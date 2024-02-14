@@ -1,9 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://cquyotwy2wum0"]
+[gd_scene load_steps=16 format=3 uid="uid://cquyotwy2wum0"]
 
-[ext_resource type="Texture2D" uid="uid://cn7xivfd7x61n" path="res://Graphics/Sprites/Touchscreen/TouchScreen.png" id="1_id7g2"]
 [ext_resource type="Shader" path="res://Shaders/Scroll.gdshader" id="2_77t1x"]
 [ext_resource type="Texture2D" uid="uid://d1ioxui7ljd25" path="res://Graphics/Sprites/Menu/BackgroundRepeat.png" id="3_t5k8y"]
-[ext_resource type="Script" path="res://Scripts/Puck.gd" id="4_6qb1o"]
 [ext_resource type="AudioStream" uid="uid://cfqnvhb4si1jj" path="res://Audio/Music/1-40 - Game Select 2 (Rhythm Tengoku).mp3" id="4_o0xbd"]
 [ext_resource type="Texture2D" uid="uid://b5ydphjpa5xg6" path="res://Graphics/Sprites/Menu/Logo.png" id="5_d332a"]
 [ext_resource type="Script" path="res://Scripts/SoundTest.gd" id="6_a8kk5"]
@@ -13,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://c7bdc0bxqtk60" path="res://Audio/SFX/CountIn/one.wav" id="11_5hxlu"]
 [ext_resource type="AudioStream" uid="uid://cvqlndv7726qv" path="res://Audio/SFX/CountIn/And.wav" id="11_d0dqo"]
 [ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="12_sua2s"]
+[ext_resource type="PackedScene" uid="uid://bgaqwhc6e47ym" path="res://Scenes/TouchScreen/Touchscreen.tscn" id="12_v7ncd"]
 
 [sub_resource type="GDScript" id="GDScript_kqqt0"]
 script/source = "extends Sprite2D
@@ -75,41 +74,6 @@ position = Vector2(97, 100)
 texture = ExtResource("5_d332a")
 script = SubResource("GDScript_kqqt0")
 
-[node name="Node2D" type="Node2D" parent="."]
-position = Vector2(-408, 732)
-
-[node name="Puck" type="Sprite2D" parent="Node2D"]
-z_index = 1
-texture_filter = 1
-position = Vector2(699, -611)
-texture = ExtResource("1_id7g2")
-hframes = 7
-vframes = 2
-script = ExtResource("4_6qb1o")
-quickTapLength = 8
-minSpeed = 0.01
-
-[node name="Eyes" type="Sprite2D" parent="Node2D/Puck"]
-z_index = 1
-texture_filter = 1
-position = Vector2(0, -36)
-texture = ExtResource("1_id7g2")
-hframes = 7
-vframes = 2
-frame = 9
-
-[node name="Face" type="Sprite2D" parent="Node2D/Puck"]
-visible = false
-z_index = 2
-texture_filter = 1
-texture = ExtResource("1_id7g2")
-hframes = 7
-vframes = 2
-frame = 8
-
-[node name="Camera2D" type="Camera2D" parent="Node2D"]
-position = Vector2(600, -604)
-
 [node name="BackgroundRepeat" type="Sprite2D" parent="."]
 texture_filter = 1
 texture_repeat = 2
@@ -157,6 +121,9 @@ offset_bottom = 22.0
 theme_override_fonts/font = SubResource("FontVariation_v2u7l")
 text = "Think you can keep up with me?"
 
-[connection signal="input" from="Node2D/Puck" to="SoundTest" method="_on_puck_input"]
+[node name="Puck" parent="." instance=ExtResource("12_v7ncd")]
+position = Vector2(281, 137)
+minSpeed = 5.0
+
 [connection signal="beat" from="Music" to="SubViewportContainer/SubViewport/Logo" method="_on_music_beat"]
 [connection signal="beat" from="Music" to="SoundTest" method="_on_music_beat"]

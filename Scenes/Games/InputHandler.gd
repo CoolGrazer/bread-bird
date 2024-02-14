@@ -44,10 +44,11 @@ func _on_puck_input(input):
 		$AnimationPlayer.stop()
 		$AnimationPlayer.play("Flick")
 		$Flick.play()
+		$Flick.seek(1.58)
+		$CoinCatch.play()
 	
 	#if input == "slide" and $Flick.playing == false:
-	#	
-	
+	#		
 	
 	if input == "justPressed" and $Flick.playing == false:
 		$AnimationPlayer.play("PressDown")
@@ -60,6 +61,6 @@ func _on_puck_input(input):
 		$Flick.stop()
 	elif input == "quickRelease":
 		$AnimationPlayer.play("Release")
-		$Release.pitch_scale = 0.5
+		$Release.pitch_scale = 2.5
 		$Release.play()
 		$Flick.stop()
