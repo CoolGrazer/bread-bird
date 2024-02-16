@@ -123,7 +123,7 @@ text = "Think you can keep up with me?"
 
 [node name="Puck" parent="." instance=ExtResource("12_v7ncd")]
 position = Vector2(281, 137)
-minSpeed = 5.0
 
 [connection signal="beat" from="Music" to="SubViewportContainer/SubViewport/Logo" method="_on_music_beat"]
 [connection signal="beat" from="Music" to="SoundTest" method="_on_music_beat"]
+[connection signal="input" from="Puck" to="SoundTest" method="_on_puck_input"]

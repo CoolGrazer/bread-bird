@@ -41,12 +41,10 @@ func _physics_process(delta):
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
 		
-		song_position_in_beats = _floorto((song_position / sec_per_beat),0.25)
+		song_position_in_beats = floor((song_position / sec_per_beat))
 		
 		GlobalValues.trueBeat = song_position / sec_per_beat
 		
-		if song_position_in_beats == 0:
-			last_reported_beat = -1
 		
 		_report_beat()
 		emit_signal("songPos",song_position)

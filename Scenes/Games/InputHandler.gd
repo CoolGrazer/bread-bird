@@ -1,26 +1,39 @@
 extends Node
 
-var beatTrgt : float = 2.0
+var beatTrgt : float = 0.0
 
 var offBeat : float = 0.0
 
-var status = ""
+var status = "Perfect"
 
 # Possible Status, EarlyMiss, EarlyBarely, Perfect, LateBarely, LateMiss
 
 func _physics_process(delta):
 	
-	if offBeat < -0.5:
-		status = "EarlyMiss"
-	elif offBeat < -0.4:
-		status = "EarlyBarely"
-	elif offBeat < 0.4:
-		status = "Perfect"
-	elif offBeat > 0.4:
-		status = "LateBarely"
-	elif offBeat > 0.5:
-		status = "LateMiss"
+	if $Coin.frame == 8 and $CoinCatch.playing == false:
+		$CoinCatch.play()
 	
+	
+	#if offBeat < -0.5:
+	#	status = "EarlyMiss"
+	#elif offBeat < -0.4:
+	#	status = "EarlyBarely"
+	#elif offBeat < 0.4:
+	#	status = "Perfect"
+	#elif offBeat > 0.4:
+	#	status = "LateBarely"
+	#elif offBeat > 0.5:
+	#	status = "LateMiss"
+	
+	if abs(offBeat) < 0.4:
+		status = "Perfect"
+	elif abs(offBeat) < 0.6:
+		status = "Barely"
+	else:
+		status = "Bad."
+	
+	if offBeat > 1:
+		beatTrgt = 12
 	
 	_calculateOffBeat()
 
@@ -30,46 +43,50 @@ func _calculateOffBeat():
 	
 	
 	
-func _fadeOut():
-	
-	$Flick.volume_db -= 3
 
 
 func _on_puck_input(input):
-	print($Release.playing)
-	if $Coin.frame == 12:
-		$Release.play()
+	
+	
+	
+	
+	
+	if input == "flick" and status == "Perfect":
 		
-	
-	if $Coin.frame > 12:
-		_fadeOut()
-	
-	if $Coin.frame > 7 and $Coin.frame < 12:
-		$Flick.pitch_scale -= 0.01
-	
-	
-	if input == "flick":
-		$Flick.pitch_scale = 1
 		$AnimationPlayer.stop()
 		$AnimationPlayer.play("Flick")
 		$Flick.play()
-		$Flick.volume_db = 0
-		$CoinCatch.play()
+	elif input == "flick":
+		get_tree().quit()
 	
 	#if input == "slide" and $Flick.playing == false:
 	#		
 	
-	if input == "justPressed" and $Flick.playing == false:
+	if input == "justPressed" and !$AnimationPlayer.current_animation == "Flick":
+		$AnimationPlayer.stop()
 		$AnimationPlayer.play("PressDown")
 		$Press.play()
 		
-	elif input == "justReleased":
+	elif input == "justReleased" and !$AnimationPlayer.current_animation == "Flick":
 		$AnimationPlayer.play("Release")
 		$Release.play()
 		$Release.pitch_scale = 1
-		$Flick.stop()
 	elif input == "quickRelease":
 		$AnimationPlayer.play("Release")
 		$Release.pitch_scale = 2.5
 		$Release.play()
-		$Flick.stop()
+
+
+func _fakeHold():
+	$AnimationPlayer.stop()
+	$AnimationPlayer.play("PressDown")
+	$Press.play()
+
+func _fakeFlick():
+	$AnimationPlayer.stop()
+	$AnimationPlayer.play("Flick")
+	$Flick.play()
+
+
+func _on_tutorial_beat(beat):
+	print("The Beat has Occured")
