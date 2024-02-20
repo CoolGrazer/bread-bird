@@ -75,7 +75,7 @@ texture = ExtResource("1_jhfe4")
 hframes = 7
 vframes = 2
 script = ExtResource("1_osk2q")
-quickTapLength = 8
+quickTapLength = 5
 minSpeed = 5.0
 
 [node name="Eyes" type="Sprite2D" parent="."]

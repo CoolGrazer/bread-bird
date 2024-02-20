@@ -24,16 +24,17 @@ var framesHeldButton : int = 99
 
 @export var disabled : bool = false
 
-var compensatedVel : Vector2 = Vector2.ZERO
+var flicking : bool = false
 
 
-var high : int = 0
 
 signal input(input)
 
-func _physics_process(delta):
+func _process(delta):
 	if disabled == true:
 		return
+	
+	
 	
 	_touchScreen()
 	
@@ -50,6 +51,7 @@ func _touchScreen():
 	
 	
 	if Input.is_action_just_pressed("Click"):
+		flicking = false
 		justClicked = true
 		framesHeldButton = 0
 		hide()
@@ -70,7 +72,7 @@ func _touchScreen():
 		
 		framesHeldButton += 1
 	elif clicking == false and !velocity == Vector2.ZERO:
-		velocity = lerp(velocity,Vector2.ZERO,0.1)
+		velocity = lerp(velocity,Vector2.ZERO,0.05)
 		position += velocity
 		
 	
@@ -79,8 +81,8 @@ func _touchScreen():
 		position.x = clamp(position.x,220,360)
 		position.y = clamp(position.y,24,232)
 	
-	
 	velocity = position - lastGlobalPos
+	
 	
 	
 	
@@ -95,18 +97,23 @@ func _touchScreen():
 	
 	lastGlobalPos = position
 	
-	#if fmod(framesHeldButton,3) == 0:
-	#	if $Face.frame == 6:
-	#		$Face.frame = 7
-	#	elif $Face.frame == 7:
-	#		$Face.frame = 8
-	#	elif $Face.frame == 8:
-	#		$Face.frame = 7
+	if clicking == false and currentAction == "quickRelease":
+		
+		
+		show()
+		frame = 0
+		#$Eyes.position = Vector2(0,-36)
+		$Face.hide()
+		$Eyes.show()
+		$Eyes.position = Vector2(0,-36)
+		#$Eyes.hide()
+		framesHeldButton = 99
+		velocity = Vector2(0,0)
 	
 	$Face.frame = round(sin(Engine.get_physics_frames() / 3.0) + 7)
 	
-	if framesHeldButton == 0:
-		#hide()
+	if framesHeldButton == 0 and clicking == true:
+		hide()
 		$Face.hide()
 		#frame = 6
 	
@@ -122,6 +129,7 @@ func _touchScreen():
 		$Eyes.position = Vector2(0,-13)
 		frame -= 1
 	elif framesHeldButton == 6:
+		$Face.show()
 		$Eyes.position = Vector2(0,-17)
 		frame -= 1
 	elif framesHeldButton == 7:
@@ -138,13 +146,13 @@ func _touchScreen():
 	
 	
 	
-	if clicking == false and frame < 5 and not (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
+	if clicking == false and frame < 5 and flicking == false:
 		
-		if fmod(Engine.get_frames_drawn(),2) == 0 and !framesHeldButton == 99:
+		if fmod(Engine.get_frames_drawn(),2) == 0 and framesHeldButton == 0:
 			$Face.hide()
 			frame += 1
 			$Eyes.position.y += 5
-		elif fmod(Engine.get_frames_drawn(),2) == 0 and framesHeldButton == 99:
+		elif fmod(Engine.get_frames_drawn(),3) == 0 and framesHeldButton == 99:
 			$Face.hide()
 			frame += 1
 			$Eyes.position.y += 5
@@ -154,8 +162,9 @@ func _touchScreen():
 		if frame == 5:
 			$Eyes.hide()
 			hide()
-	elif clicking == false and frame < 5:
 		
+	
+	elif clicking == false and frame <= 5 and flicking == true:
 		$Face.hide()
 		if fmod(Engine.get_frames_drawn(),4) == 0:
 			frame += 1
@@ -164,18 +173,6 @@ func _touchScreen():
 		if frame == 5:
 			$Eyes.hide()
 			hide()
-	
-	if clicking == false and currentAction == "quickRelease":
-		
-		
-		frame = 0
-		#$Eyes.position = Vector2(0,-36)
-		$Face.hide()
-		$Eyes.show()
-		$Eyes.position = Vector2(0,-36)
-		#$Eyes.hide()
-		framesHeldButton = 99
-		velocity = Vector2(0,0)
 	
 	
 	
@@ -203,9 +200,8 @@ func _determineInput():
 	if justReleased == true and framesHeldButton < quickTapLength:
 		currentAction = actionTypes[3]
 		justReleased = false
-		framesHeldButton = 0
 	elif justReleased == true and (abs(velocity.x) + abs(velocity.y)) / 2 > minSpeed:
-		
+		flicking = true
 		currentAction = actionTypes[5]
 		justReleased = false
 	elif justReleased == true:
@@ -223,3 +219,7 @@ func _determineInput():
 
 func _on_textbox_enabled(enabled):
 	disabled = not enabled
+	
+	if enabled == true:
+		velocity = Vector2.ZERO
+	

@@ -16,21 +16,33 @@ script/source = "extends Node2D
 
 @export var Enable : Array[bool]
 
+@export var TextNotSkippable : Array[bool]
+
 var indx : int = 0
 
 var textOn : bool = true
 
+var canSkip : bool = false
+
+var initDelay : bool = false
+
 signal Enabled(enabled)
+
+
+
 
 func _ready():
 	_text(TextDoTo[indx],SizeToDo[indx],Enable[indx])
 	indx += 1
 
 func _physics_process(delta):
-	if Input.is_action_just_pressed(\"Click\") and textOn == true:
+	if Input.is_action_just_pressed(\"Click\") and textOn == true and initDelay == false and TextNotSkippable[indx] == false:
 		$Start.play()
+		canSkip = false
+		$Delay.start()
+		
 	
-	if Input.is_action_just_released(\"Click\") and indx < TextDoTo.size() and textOn == true:
+	if Input.is_action_just_released(\"Click\") and indx < TextDoTo.size() and textOn == true and canSkip == true and initDelay == false and TextNotSkippable[indx] == false:
 		_text(TextDoTo[indx],SizeToDo[indx],Enable[indx])
 		indx += 1
 		$Stop.play()
@@ -39,6 +51,11 @@ func _physics_process(delta):
 
 
 func _text(text,size,enabled):
+	initDelay = true
+	
+	if indx == 1:
+		hide()
+	$InitDelay.start()
 	$Small.hide()
 	$Medium.hide()
 	$Large.hide()
@@ -60,6 +77,15 @@ func _text(text,size,enabled):
 	if enabled == false:
 		textOn = true
 	
+
+
+func _on_delay_timeout():
+	canSkip = true
+
+
+func _on_init_delay_timeout():
+	initDelay = false
+	show()
 "
 
 [sub_resource type="FontVariation" id="FontVariation_tktow"]
@@ -129,3 +155,15 @@ stream = ExtResource("5_aexc3")
 
 [node name="Stop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_ffjbu")
+
+[node name="Delay" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="InitDelay" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="Delay" to="." method="_on_delay_timeout"]
+[connection signal="timeout" from="InitDelay" to="." method="_on_delay_timeout"]
+[connection signal="timeout" from="InitDelay" to="." method="_on_init_delay_timeout"]

@@ -4,7 +4,6 @@ var high = 0
 
 
 func _on_puck_input(input):
-	print(input)
 	if Input.is_action_just_pressed("Debug"):
 		high = 1
 	

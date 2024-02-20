@@ -1,6 +1,6 @@
 extends Node
 
-var beatTrgt : float = 0.0
+var beatTrgt : float = 4.0
 
 var offBeat : float = 0.0
 
@@ -10,7 +10,8 @@ var status = "Perfect"
 
 func _physics_process(delta):
 	
-	if $Coin.frame == 8 and $CoinCatch.playing == false:
+	if $Coin.frame == 9 and $CoinCatch.playing == false:
+		
 		$CoinCatch.play()
 	
 	
@@ -47,17 +48,21 @@ func _calculateOffBeat():
 
 func _on_puck_input(input):
 	
+	print(input)
 	
-	
+	if get_parent().get_child(4).indx < 14:
+		status = "Perfect"
 	
 	
 	if input == "flick" and status == "Perfect":
 		
 		$AnimationPlayer.stop()
+		$Flick.pitch_scale = 1.0
 		$AnimationPlayer.play("Flick")
 		$Flick.play()
 	elif input == "flick":
-		get_tree().quit()
+		$AnimationPlayer.play("BadFlick")
+		$Flick.pitch_scale = 0.75
 	
 	#if input == "slide" and $Flick.playing == false:
 	#		
@@ -83,10 +88,11 @@ func _fakeHold():
 	$Press.play()
 
 func _fakeFlick():
+	print("are you runnign")
 	$AnimationPlayer.stop()
 	$AnimationPlayer.play("Flick")
 	$Flick.play()
 
 
 func _on_tutorial_beat(beat):
-	print("The Beat has Occured")
+	pass
