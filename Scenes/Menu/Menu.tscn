@@ -83,11 +83,11 @@ colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
 color_ramp = SubResource("Gradient_gfdcn")
 noise = SubResource("FastNoiseLite_w5113")
 
-[sub_resource type="Animation" id="Animation_cth8m"]
-resource_name = "FadeOut"
-
 [sub_resource type="Animation" id="Animation_l33ea"]
 resource_name = "FadeIn"
+
+[sub_resource type="Animation" id="Animation_cth8m"]
+resource_name = "FadeOut"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6qg20"]
 _data = {

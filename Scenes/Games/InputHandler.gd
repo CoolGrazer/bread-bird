@@ -26,15 +26,16 @@ func _physics_process(delta):
 	#elif offBeat > 0.5:
 	#	status = "LateMiss"
 	
-	if abs(offBeat) < 0.4:
+	if abs(offBeat) < 0.3:
 		status = "Perfect"
-	elif abs(offBeat) < 0.6:
+	elif abs(offBeat) < 0.4:
 		status = "Barely"
 	else:
 		status = "Bad."
 	
-	if offBeat > 1:
-		beatTrgt = 12
+	
+	
+	
 	
 	_calculateOffBeat()
 
@@ -48,7 +49,7 @@ func _calculateOffBeat():
 
 func _on_puck_input(input):
 	
-	print(input)
+	print(status)
 	
 	if get_parent().get_child(4).indx < 14:
 		status = "Perfect"
@@ -63,6 +64,7 @@ func _on_puck_input(input):
 	elif input == "flick":
 		$AnimationPlayer.play("BadFlick")
 		$Flick.pitch_scale = 0.75
+		$Flick.play()
 	
 	#if input == "slide" and $Flick.playing == false:
 	#		

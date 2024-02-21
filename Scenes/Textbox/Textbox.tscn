@@ -53,7 +53,7 @@ func _physics_process(delta):
 func _text(text,size,enabled):
 	initDelay = true
 	
-	if indx == 1:
+	if !indx == 0:
 		hide()
 	$InitDelay.start()
 	$Small.hide()
