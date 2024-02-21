@@ -1,17 +1,15 @@
-[gd_scene load_steps=16 format=3 uid="uid://cquyotwy2wum0"]
+[gd_scene load_steps=22 format=3 uid="uid://cquyotwy2wum0"]
 
 [ext_resource type="Shader" path="res://Shaders/Scroll.gdshader" id="2_77t1x"]
 [ext_resource type="Texture2D" uid="uid://d1ioxui7ljd25" path="res://Graphics/Sprites/Menu/BackgroundRepeat.png" id="3_t5k8y"]
 [ext_resource type="AudioStream" uid="uid://cfqnvhb4si1jj" path="res://Audio/Music/1-40 - Game Select 2 (Rhythm Tengoku).mp3" id="4_o0xbd"]
 [ext_resource type="Texture2D" uid="uid://b5ydphjpa5xg6" path="res://Graphics/Sprites/Menu/Logo.png" id="5_d332a"]
-[ext_resource type="Script" path="res://Scripts/SoundTest.gd" id="6_a8kk5"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="6_j56dj"]
-[ext_resource type="AudioStream" uid="uid://bom2qdgwqih34" path="res://Audio/SFX/TestSpaceSoccer/kick.ogg" id="7_5yn3g"]
-[ext_resource type="AudioStream" uid="uid://dmqr3tloawlmr" path="res://Audio/SFX/CountIn/Go.wav" id="9_rebdl"]
-[ext_resource type="AudioStream" uid="uid://c7bdc0bxqtk60" path="res://Audio/SFX/CountIn/one.wav" id="11_5hxlu"]
-[ext_resource type="AudioStream" uid="uid://cvqlndv7726qv" path="res://Audio/SFX/CountIn/And.wav" id="11_d0dqo"]
 [ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="12_sua2s"]
-[ext_resource type="PackedScene" uid="uid://bgaqwhc6e47ym" path="res://Scenes/TouchScreen/Touchscreen.tscn" id="12_v7ncd"]
+[ext_resource type="Texture2D" uid="uid://c1wsy0158dtqp" path="res://Graphics/Sprites/Menu/Play.png" id="13_txssx"]
+[ext_resource type="Script" path="res://Scenes/Menu/Button.gd" id="14_s1t4k"]
+[ext_resource type="Texture2D" uid="uid://d2ciy378jiaiu" path="res://Graphics/Sprites/Menu/Help.png" id="15_2f45b"]
+[ext_resource type="Texture2D" uid="uid://cg0s8xqnq0jen" path="res://Graphics/Sprites/Menu/Remix.png" id="16_mdop1"]
 
 [sub_resource type="GDScript" id="GDScript_kqqt0"]
 script/source = "extends Sprite2D
@@ -30,8 +28,9 @@ func _physics_process(delta):
 
 func _bop():
 	rotation_degrees = 12 * bopDir
-	scale.x = randf_range(1.1,1.5)
-	scale.y = randf_range(1.1,1.5)
+	
+	scale.x = randf_range(1.0,1.5)
+	scale.y = randf_range(1.0,1.5)
 	
 
 
@@ -51,6 +50,50 @@ shader_parameter/scrollSpeed = 0.0
 [sub_resource type="FontVariation" id="FontVariation_v2u7l"]
 base_font = ExtResource("12_sua2s")
 spacing_glyph = -6
+
+[sub_resource type="Shader" id="Shader_q36b3"]
+code = "shader_type canvas_item;
+
+uniform float alpha = 0.0;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment(){
+	COLOR.a = alpha;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_upe7w"]
+shader = SubResource("Shader_q36b3")
+shader_parameter/alpha = 0.0
+
+[sub_resource type="Gradient" id="Gradient_gfdcn"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_w5113"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e8d5j"]
+color_ramp = SubResource("Gradient_gfdcn")
+noise = SubResource("FastNoiseLite_w5113")
+
+[sub_resource type="Animation" id="Animation_cth8m"]
+resource_name = "FadeOut"
+
+[sub_resource type="Animation" id="Animation_l33ea"]
+resource_name = "FadeIn"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6qg20"]
+_data = {
+"FadeIn": SubResource("Animation_l33ea"),
+"FadeOut": SubResource("Animation_cth8m")
+}
 
 [node name="Node2D" type="Node2D"]
 position = Vector2(0, -1)
@@ -89,27 +132,12 @@ script = ExtResource("6_j56dj")
 bpm = 105.0
 msOffset = 80.0
 
-[node name="SoundTest" type="Node" parent="."]
-script = ExtResource("6_a8kk5")
-
-[node name="Kick" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("7_5yn3g")
-
-[node name="High" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("11_5hxlu")
-
-[node name="HighKick" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("11_d0dqo")
-
-[node name="Toe" type="AudioStreamPlayer" parent="SoundTest"]
-stream = ExtResource("9_rebdl")
-
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = 1
-offset_left = -6.0
-offset_top = -11.0
-offset_right = 419.0
-offset_bottom = 269.0
+offset_left = 76.0
+offset_top = 55.0
+offset_right = 501.0
+offset_bottom = 335.0
 color = Color(0, 0, 0, 0)
 
 [node name="Label" type="Label" parent="."]
@@ -121,10 +149,36 @@ offset_bottom = 22.0
 theme_override_fonts/font = SubResource("FontVariation_v2u7l")
 text = "Think you can keep up with me?"
 
-[node name="Puck" parent="." instance=ExtResource("12_v7ncd")]
-position = Vector2(281, 137)
-minSpeed = 1.0
+[node name="Play" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(288, 50)
+texture = ExtResource("13_txssx")
+hframes = 3
+script = ExtResource("14_s1t4k")
+
+[node name="Help" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(288, 200)
+texture = ExtResource("15_2f45b")
+hframes = 3
+script = ExtResource("14_s1t4k")
+
+[node name="Remix" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(288, 125)
+texture = ExtResource("16_mdop1")
+hframes = 3
+script = ExtResource("14_s1t4k")
+
+[node name="FadeOut" type="Sprite2D" parent="."]
+z_index = 20
+material = SubResource("ShaderMaterial_upe7w")
+position = Vector2(184, 22)
+texture = SubResource("NoiseTexture2D_e8d5j")
+
+[node name="Fading" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6qg20")
+}
 
 [connection signal="beat" from="Music" to="SubViewportContainer/SubViewport/Logo" method="_on_music_beat"]
-[connection signal="beat" from="Music" to="SoundTest" method="_on_music_beat"]
-[connection signal="input" from="Puck" to="SoundTest" method="_on_puck_input"]
