@@ -23,7 +23,7 @@ GlobalValues="*res://Scripts/GlobalValues.gd"
 
 window/size/viewport_width=384
 window/size/viewport_height=256
-window/stretch/mode="canvas_items"
+window/stretch/mode="viewport"
 window/vsync/vsync_mode=0
 
 [input]
@@ -69,5 +69,6 @@ common/physics_jitter_fix=0.0
 rendering_device/driver="opengl3"
 gl_compatibility/driver="vulkan"
 renderer/rendering_method="mobile"
+anti_aliasing/quality/msaa_3d=3
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
