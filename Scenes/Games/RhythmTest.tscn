@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b55hqnsvt2xt5"]
+[gd_scene load_steps=26 format=3 uid="uid://b55hqnsvt2xt5"]
 
 [ext_resource type="Texture2D" uid="uid://s2mmvrk7b62b" path="res://Graphics/Sprites/RhythmTest/Coin.png" id="5_li6vq"]
 [ext_resource type="AudioStream" uid="uid://b7ql3tltlu5pi" path="res://Audio/SFX/RhythmTest/catch.ogg" id="6_3urxx"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://d0gjm37w0o08j" path="res://Scenes/Textbox/Textbox.tscn" id="7_x62lt"]
 [ext_resource type="AudioStream" uid="uid://xafm4ks4o6gt" path="res://Audio/Music/NewAndImproved.mp3" id="9_0yvk5"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="10_175jh"]
+[ext_resource type="Texture2D" uid="uid://ccfiaek3dg5ow" path="res://Graphics/Sprites/TextboxYou/You.png" id="11_ngylx"]
 
 [sub_resource type="GDScript" id="GDScript_s01wj"]
 resource_name = "RhythmTest"
@@ -246,6 +247,12 @@ TextNotSkippable = Array[bool]([false, false, false, false, false, false, false,
 stream = ExtResource("9_0yvk5")
 script = ExtResource("10_175jh")
 bpm = 100.0
+
+[node name="You" type="Sprite2D" parent="."]
+z_index = 1
+texture_filter = 1
+position = Vector2(96, 20)
+texture = ExtResource("11_ngylx")
 
 [connection signal="input" from="Puck" to="." method="_on_puck_input"]
 [connection signal="input" from="Puck" to="Input" method="_on_puck_input"]

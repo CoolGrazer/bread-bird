@@ -165,5 +165,5 @@ wait_time = 0.5
 one_shot = true
 
 [connection signal="timeout" from="Delay" to="." method="_on_delay_timeout"]
-[connection signal="timeout" from="InitDelay" to="." method="_on_delay_timeout"]
 [connection signal="timeout" from="InitDelay" to="." method="_on_init_delay_timeout"]
+[connection signal="timeout" from="InitDelay" to="." method="_on_delay_timeout"]
