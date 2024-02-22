@@ -150,6 +150,9 @@ tracks/1/keys = {
 "values": [-30.0, 0.0]
 }
 
+[sub_resource type="Animation" id="Animation_cth8m"]
+resource_name = "FadeOut"
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6qg20"]
 _data = {
 "FadeIn": SubResource("Animation_l33ea"),

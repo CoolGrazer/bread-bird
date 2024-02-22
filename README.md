@@ -10,20 +10,8 @@
 
 # To Do's
 
-Songs
 
-Charter/Charting
-> Introduce Charting with Dev Textures to protoype the idea. Add A CHART button to enter said mode.
-
-~~Touchscreen Inputs~~
-
-Art
-
-
-Menus
--Rhythm Test
--Options
--Actual Game
+~ Make tutorial music! ~
 
 # This Project..
 
