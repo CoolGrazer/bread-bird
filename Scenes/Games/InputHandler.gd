@@ -49,7 +49,6 @@ func _calculateOffBeat():
 
 func _on_puck_input(input):
 	
-	print(status)
 	
 	if get_parent().get_child(4).indx < 14:
 		status = "Perfect"

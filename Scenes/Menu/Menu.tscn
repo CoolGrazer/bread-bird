@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Shaders/Scroll.gdshader" id="2_77t1x"]
 [ext_resource type="Texture2D" uid="uid://d1ioxui7ljd25" path="res://Graphics/Sprites/Menu/BackgroundRepeat.png" id="3_t5k8y"]
-[ext_resource type="AudioStream" uid="uid://cfqnvhb4si1jj" path="res://Audio/Music/1-40 - Game Select 2 (Rhythm Tengoku).mp3" id="4_o0xbd"]
+[ext_resource type="AudioStream" uid="uid://bhmdjpqbadh7v" path="res://Audio/Music/Title.mp3" id="4_1ly8a"]
 [ext_resource type="Texture2D" uid="uid://b5ydphjpa5xg6" path="res://Graphics/Sprites/Menu/Logo.png" id="5_d332a"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="6_j56dj"]
 [ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="12_sua2s"]
@@ -19,18 +19,17 @@ var bopDir : int = 1
 
 func _physics_process(delta):
 	
-	if scale.x > 1.01:
-		var tween = get_tree().create_tween()
+	if abs(rotation_degrees) > 0.15:
 		var tween2 = get_tree().create_tween()
-		tween.tween_property(self,\"scale\",Vector2(1,1),0.2)
-		tween2.tween_property(self,\"rotation_degrees\",0.0,0.2)
+		tween2.tween_property(self,\"rotation_degrees\",0.0,0.1)
 	
 
 func _bop():
-	rotation_degrees = 12 * bopDir
+	print(bopDir)
+	rotation_degrees = 15 * bopDir
 	
-	scale.x = randf_range(1.0,1.5)
-	scale.y = randf_range(1.0,1.5)
+	#scale.x = randf_range(1.0,1.5)
+	#scale.y = randf_range(1.0,1.5)
 	
 
 
@@ -38,6 +37,7 @@ func _bop():
 
 func _on_music_beat(position):
 	if fmod(position,1) == 0:
+		
 		_bop()
 		bopDir *= -1
 "
@@ -163,11 +163,10 @@ scale = Vector2(2.01, 0.998)
 texture = ExtResource("3_t5k8y")
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_o0xbd")
+stream = ExtResource("4_1ly8a")
 autoplay = true
 script = ExtResource("6_j56dj")
-bpm = 105.0
-msOffset = 80.0
+bpm = 160.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = 1
