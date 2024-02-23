@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3 uid="uid://dyeldxfh4deg1"]
+
+[ext_resource type="PackedScene" uid="uid://dqrufr5wbco2h" path="res://Scenes/Games/BreadBird.tscn" id="1_qppap"]
+
+[sub_resource type="GDScript" id="GDScript_8qc0g"]
+script/source = "extends Control
+
+var t = preload(\"res://Scenes/Charter/Tick.tscn\")
+
+var posX : float = 0.0
+
+func _ready():
+	for x in range(1000):
+		var tick = t.instantiate()
+		add_child(tick)
+		tick.global_position.y = 184
+		tick.global_position.x = posX
+		posX += 32
+
+
+func _physics_process(delta):
+	pass
+
+
+func _on_button_button_down():
+	var g = preload(\"res://Scenes/Charter/GenericBlock.tscn\").instantiate()
+	add_child(g)
+	g.global_position = get_global_mouse_position() + Vector2(16,0)
+	g.clicked = true
+"
+
+[sub_resource type="GDScript" id="GDScript_byssg"]
+script/source = "extends Camera2D
+
+
+func _on_h_scroll_bar_value_changed(value):
+	position.x = value + 192
+"
+
+[node name="Charter" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_8qc0g")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+clip_contents = true
+layout_mode = 0
+offset_right = 384.0
+offset_bottom = 256.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+canvas_item_default_texture_repeat = 1
+size = Vector2i(384, 256)
+render_target_update_mode = 4
+
+[node name="BreadBird" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_qppap")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(192, 128)
+script = SubResource("GDScript_byssg")
+
+[node name="HScrollBar" type="HScrollBar" parent="Camera2D"]
+offset_left = -192.0
+offset_top = 116.0
+offset_right = 191.0
+offset_bottom = 124.0
+max_value = 512.0
+step = 32.0
+
+[node name="Button" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = -128.0
+offset_right = 192.0
+offset_bottom = -64.0
+text = "Spawn Bread"
+
+[connection signal="value_changed" from="Camera2D/HScrollBar" to="Camera2D" method="_on_h_scroll_bar_value_changed"]
+[connection signal="button_down" from="Camera2D/Button" to="." method="_on_button_button_down"]

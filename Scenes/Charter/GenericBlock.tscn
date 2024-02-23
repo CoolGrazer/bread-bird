@@ -1,0 +1,90 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2x3tevk2ag52"]
+
+[ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="1_uoi4o"]
+
+[sub_resource type="GDScript" id="GDScript_pyv2o"]
+script/source = "extends StaticBody2D
+
+@export var property = \"\"
+
+var beat = 0
+
+var clicked : bool = false
+
+
+func _physics_process(delta):
+	
+	
+	beat = ((position.x - 16) / 32)
+	
+	print(beat)
+	
+	if _mouseCloseToDimensions(32/2,24/2) and Input.is_action_just_pressed(\"Click\"):
+		clicked = true
+	
+	if _mouseCloseToDimensions(32/2,24/2) and Input.is_action_just_pressed(\"Delete\"):
+		queue_free()
+	
+	if clicked == true and Input.is_action_just_released(\"Click\"):
+		clicked = false
+	
+	
+	if clicked == true:
+		global_position = snapped(get_global_mouse_position(),Vector2(8,24))
+	
+	
+	global_position = snapped(global_position,Vector2(8,24))
+
+
+func _mouseCloseToDimensions(x,y):
+	pass
+	
+	var mouseLocalToMe : Vector2 = Vector2.ZERO
+	
+	mouseLocalToMe = abs(global_position - get_global_mouse_position())
+	if mouseLocalToMe.x < x and mouseLocalToMe.y < y:
+		return true
+	else:
+		return false
+
+
+func _returnProperties():
+	
+	return [beat,property]
+	
+"
+
+[sub_resource type="FontVariation" id="FontVariation_fqxja"]
+base_font = ExtResource("1_uoi4o")
+spacing_glyph = -6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjatk"]
+bg_color = Color(0, 1, 0.65098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 20
+anti_aliasing = false
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = SubResource("GDScript_pyv2o")
+
+[node name="Label" type="Label" parent="."]
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -12.0
+offset_right = 16.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("FontVariation_fqxja")
+theme_override_styles/normal = SubResource("StyleBoxFlat_yjatk")
+text = "Bread"
+horizontal_alignment = 1
+vertical_alignment = 1

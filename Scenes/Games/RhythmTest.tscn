@@ -33,14 +33,20 @@ func _ready():
 
 
 func _physics_process(delta):
+	if $Textbox.indx == 23:
+		get_tree().change_scene_to_file(\"res://Scenes/Menu/Menu.tscn\")
 	
-	if $Textbox.indx == 16 and $Tutorial.playing == false and loopsLeft > 0:
-		$Tutorial.last_reported_beat = -1
+	if $Textbox.indx == 16 and $Tutorial.playing == false:
+		$Tutorial.play()
+	
+	if $Textbox.indx == 18 and $Tutorial.playing == false and loopsLeft > 0:
 		loopsLeft -= 1
 		$Tutorial.play()
-	
-	if $Textbox.indx == 18 and $Tutorial.playing == false:
-		$Tutorial.play()
+		$Tutorial.last_reported_beat = -1
+		$Tutorial.song_position_in_beats = 0
+	elif $Textbox.indx == 18 and $Tutorial.playing == false and loopsLeft == 0:
+		$Textbox._text($Textbox.TextDoTo[$Textbox.indx],$Textbox.SizeToDo[$Textbox.indx],$Textbox.Enable[$Textbox.indx])
+		$Textbox.indx += 1
 	
 	
 	if timesLeft == 0 and $Puck.visible == false:
@@ -86,9 +92,10 @@ func _on_tutorial_beat(beat):
 	if beat == 4 and $Textbox.indx == 16:
 		get_node(\"CountIn/Go\").play()
 		$Input._fakeFlick()
-		
 	
-	if beat == 8:
+	
+	
+	if beat == 8 and $Textbox.indx == 16:
 		$Textbox._text($Textbox.TextDoTo[$Textbox.indx],$Textbox.SizeToDo[$Textbox.indx],$Textbox.Enable[$Textbox.indx])
 		$Textbox.indx += 1
 
@@ -110,7 +117,7 @@ noise = SubResource("FastNoiseLite_f7d1v")
 
 [sub_resource type="Gradient" id="Gradient_khm8y"]
 offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0.133333, 0.12549, 0.203922, 1)
+colors = PackedColorArray(0.196961, 0.186646, 0.290525, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dolcp"]
 
@@ -268,10 +275,10 @@ stream = ExtResource("7_i6m78")
 [node name="Textbox" parent="." instance=ExtResource("7_x62lt")]
 z_index = 7
 position = Vector2(99, 25)
-TextDoTo = Array[String](["Press on your touch screen to continue.", "Welcome to <good game title>!", "Since this is your first time, we'll start simple.", "See that coin? Try pressing on it!", "", "Nice!", "That's the power of TAPPING and HOLDING!", "Now it is time for the FLICK.", "Think of the FLICK as a strong swipe.", "Like swiping through your phone!", "You have to release at the end.", "Go for it!", "Now lets try adding some RHYTHM.", "Listen to me for a second.", "Try to remeber my cues.", "", "Now you do it!", ""])
-SizeToDo = Array[int]([0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4])
-Enable = Array[bool]([false, false, false, false, true, false, false, false, false, false, false, true, false, false, false, false, false, true])
-TextNotSkippable = Array[bool]([false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true, false])
+TextDoTo = Array[String](["Press on your touch screen to continue.", "Welcome to <good game title>!", "Since this is your first time, we'll start simple.", "See that coin? Try pressing on it!", "", "Nice!", "That's the power of TAPPING and HOLDING!", "Now it is time for the FLICK.", "Think of the FLICK as a strong swipe.", "Like swiping through your phone!", "You have to release at the end.", "Go for it!", "Now lets try adding some RHYTHM.", "Listen to me for a second.", "Try to remeber my cues.", "", "Now you do it!", "", "How'd you do?", "It's fine if you made some mistakes!", "Just get into the rhythm!", "Remember you can always play this again with the HELP button.", ""])
+SizeToDo = Array[int]([0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 1, 0])
+Enable = Array[bool]([false, false, false, false, true, false, false, false, false, false, false, true, false, false, false, false, false, true, false, false, false, false, false])
+TextNotSkippable = Array[bool]([false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false, false, false])
 
 [node name="Tutorial" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("9_0yvk5")

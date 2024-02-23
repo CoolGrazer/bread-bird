@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://cdo7wp267o36o"]
+
+[ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="1_1ffku"]
+
+[sub_resource type="GDScript" id="GDScript_bry1r"]
+script/source = "extends Node2D
+
+
+var number : int = 0
+
+func _process(delta):
+	number = global_position.x / 32
+	$Label2.text = str(number)
+
+
+"
+
+[sub_resource type="FontVariation" id="FontVariation_01qc3"]
+base_font = ExtResource("1_1ffku")
+spacing_glyph = -5
+
+[sub_resource type="Gradient" id="Gradient_rvjd7"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_e5q4p"]
+gradient = SubResource("Gradient_rvjd7")
+
+[node name="Node2D" type="Node2D"]
+script = SubResource("GDScript_bry1r")
+
+[node name="Label2" type="Label" parent="."]
+texture_filter = 1
+offset_left = -21.0
+offset_top = -30.0
+offset_right = 23.0
+offset_bottom = -7.0
+theme_override_fonts/font = SubResource("FontVariation_01qc3")
+text = "0"
+horizontal_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -7)
+scale = Vector2(0.015625, 0.199219)
+texture = SubResource("GradientTexture2D_e5q4p")

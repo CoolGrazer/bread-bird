@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://dlqf0lgr43de1"]
+
+[ext_resource type="Texture2D" uid="uid://bj5kt2ftti3jq" path="res://Graphics/Sprites/Bird Bread/Bread.png" id="1_vywta"]
+
+[sub_resource type="GDScript" id="GDScript_e226a"]
+script/source = "extends StaticBody2D
+
+var yVel : float = 0.0
+
+var xVel : float = 0.0
+
+func _ready():
+	yVel = -5.0
+	xVel = randf_range(-5,5)
+
+func _physics_process(delta):
+	
+	rotation_degrees += 12.5
+	
+	yVel += 0.25
+	
+	position += Vector2(xVel,yVel)
+"
+
+[node name="StaticBody2D" type="StaticBody2D"]
+scale = Vector2(0.295, 0.295)
+script = SubResource("GDScript_e226a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_vywta")

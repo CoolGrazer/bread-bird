@@ -41,7 +41,7 @@ func _physics_process(delta):
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
 		
-		song_position_in_beats = _floorto(song_position / sec_per_beat,0.5)
+		song_position_in_beats = _floorto(song_position / sec_per_beat,0.25)
 		
 		GlobalValues.trueBeat = song_position / sec_per_beat
 		
