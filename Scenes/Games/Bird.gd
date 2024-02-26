@@ -54,7 +54,7 @@ func _physics_process(delta):
 	
 	
 	
-
+	print(GlobalValues.score)
 	
 	position.x += xVel
 	
@@ -129,13 +129,17 @@ func _missedBreadToss():
 
 func _on_input_status_emit(status):
 	if status == "Perfect":
+		GlobalValues.score += 1.2
 		_goodBreadToss()
 	elif status == "Barely":
 		_barelyBreadToss()
+		GlobalValues.score += 0.0
 	else:
 		_missedBreadToss()
+		GlobalValues.score += 0.0
 
 
 func _on_puck_input(input):
 	if input == "justPressed":
 		_mouthOpen()
+	

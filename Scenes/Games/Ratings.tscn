@@ -1,0 +1,238 @@
+[gd_scene load_steps=17 format=3 uid="uid://clrfygrtk0jhs"]
+
+[ext_resource type="Texture2D" uid="uid://dr7x32alcwuny" path="res://Graphics/Sprites/Bird Bread/Ratings.png" id="1_ll7kh"]
+[ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="2_oyxud"]
+[ext_resource type="AudioStream" uid="uid://cmw70vawr5l7f" path="res://Audio/Music/TryAgain.wav" id="3_0fe6d"]
+[ext_resource type="AudioStream" uid="uid://dipgtcpdb51xe" path="res://Audio/Music/OK.wav" id="4_0t75w"]
+[ext_resource type="AudioStream" uid="uid://d1aanogloowha" path="res://Audio/Music/Superb.wav" id="5_i37m5"]
+
+[sub_resource type="GDScript" id="GDScript_uyrop"]
+script/source = "extends Node2D
+
+
+var letGo : bool = false
+
+func _ready():
+	if GlobalValues.score > 80:
+		$Superb2.play()
+		$Superb.show()
+	elif GlobalValues.score > 60:
+		$OK2.play()
+		$OK.show()
+	else:
+		$TryAgainNode.show()
+		$TryAgain.play()
+
+
+
+func _physics_process(delta):
+	if Input.is_action_just_released(\"Click\"):
+		$Fading.play(\"FadeIn\")
+		letGo = true
+	
+	
+	if letGo == true and $Fading.current_animation == \"\":
+		get_tree().change_scene_to_file(\"res://Scenes/Menu/Menu.tscn\")
+	
+	
+	
+"
+
+[sub_resource type="FontVariation" id="FontVariation_d4e8k"]
+base_font = ExtResource("2_oyxud")
+spacing_glyph = -6
+
+[sub_resource type="Shader" id="Shader_q36b3"]
+code = "shader_type canvas_item;
+
+uniform float alpha = 0.0;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment(){
+	COLOR.a = alpha;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o3hpj"]
+shader = SubResource("Shader_q36b3")
+shader_parameter/alpha = 0.0
+
+[sub_resource type="Gradient" id="Gradient_gfdcn"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_w5113"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ceois"]
+color_ramp = SubResource("Gradient_gfdcn")
+noise = SubResource("FastNoiseLite_w5113")
+
+[sub_resource type="Animation" id="Animation_l33ea"]
+resource_name = "FadeIn"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(0, 0, 0, 0, 0, 0),
+"update": 0,
+"values": [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1.8, 1.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -29.0, -29.0, -30.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Music:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_cth8m"]
+resource_name = "FadeOut"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 0.8, 0.6, 0.4, 0.2, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_i17ny"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6qg20"]
+_data = {
+"FadeIn": SubResource("Animation_l33ea"),
+"FadeOut": SubResource("Animation_cth8m"),
+"RESET": SubResource("Animation_i17ny")
+}
+
+[node name="Ratings" type="Node2D"]
+script = SubResource("GDScript_uyrop")
+
+[node name="TryAgainNode" type="Node2D" parent="."]
+visible = false
+
+[node name="Try Again" type="Sprite2D" parent="TryAgainNode"]
+texture_filter = 1
+position = Vector2(96, 128)
+texture = ExtResource("1_ll7kh")
+hframes = 3
+
+[node name="Try Again2" type="Label" parent="TryAgainNode"]
+texture_filter = 1
+offset_top = 178.0
+offset_right = 192.0
+offset_bottom = 201.0
+theme_override_fonts/font = SubResource("FontVariation_d4e8k")
+text = "Your pretty hungry!"
+horizontal_alignment = 1
+
+[node name="OK" type="Node2D" parent="."]
+visible = false
+
+[node name="Try Again" type="Sprite2D" parent="OK"]
+texture_filter = 1
+position = Vector2(96, 128)
+texture = ExtResource("1_ll7kh")
+hframes = 3
+frame = 1
+
+[node name="Try Again2" type="Label" parent="OK"]
+texture_filter = 1
+offset_top = 178.0
+offset_right = 192.0
+offset_bottom = 201.0
+theme_override_fonts/font = SubResource("FontVariation_d4e8k")
+text = "Getting better.."
+horizontal_alignment = 1
+
+[node name="Superb" type="Node2D" parent="."]
+visible = false
+
+[node name="Try Again" type="Sprite2D" parent="Superb"]
+texture_filter = 1
+position = Vector2(96, 128)
+texture = ExtResource("1_ll7kh")
+hframes = 3
+frame = 2
+
+[node name="Try Again2" type="Label" parent="Superb"]
+texture_filter = 1
+offset_top = 178.0
+offset_right = 192.0
+offset_bottom = 201.0
+theme_override_fonts/font = SubResource("FontVariation_d4e8k")
+text = "A meal well earned!"
+horizontal_alignment = 1
+
+[node name="FadeOut" type="Sprite2D" parent="."]
+z_index = 20
+material = SubResource("ShaderMaterial_o3hpj")
+position = Vector2(184, 22)
+texture = SubResource("NoiseTexture2D_ceois")
+
+[node name="Fading" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6qg20")
+}
+autoplay = "FadeOut"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+offset_right = 381.0
+offset_bottom = 264.0
+color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[node name="TryAgain" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_0fe6d")
+
+[node name="OK2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_0t75w")
+
+[node name="Superb2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_i37m5")

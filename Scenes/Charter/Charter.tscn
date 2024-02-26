@@ -97,6 +97,10 @@ func _load():
 		g.global_position.x = (x[0] * 32) + 16
 		g.global_position.y = 199
 		
+		
+	
+	print(prepChart)
+	print(throwChart)
 	
 
 

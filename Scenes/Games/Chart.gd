@@ -8,13 +8,26 @@ var finalThrow = [20,30]
 var indx : int = 0
 var indx2 : int = 0
 
+var value : int = 2
+
 signal breadToss
 signal breadCatch
 
+@export var enabled : bool = false
 
+func _ready():
+	if enabled == false:
+		for x in range(5):
+			breadPrep.append([value,"toss"])
+			breadTosses.append([value + 1,"throw"])
+			value += 2
+ 
 
 
 func _on_audio_stream_player_beat(beat):
+	
+	if enabled == false:
+		return
 	
 	if indx < breadPrep.size() and beat == breadPrep[indx][0]:
 		emit_signal("breadToss")

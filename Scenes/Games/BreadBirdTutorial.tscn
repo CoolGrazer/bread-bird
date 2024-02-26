@@ -1,15 +1,22 @@
-[gd_scene load_steps=21 format=3 uid="uid://17vnuhtjqbn6"]
+[gd_scene load_steps=38 format=3 uid="uid://17vnuhtjqbn6"]
 
+[ext_resource type="Script" path="res://Scenes/Games/BreadBirdTutorial.gd" id="1_1mu5p"]
 [ext_resource type="Texture2D" uid="uid://dfiywg3braf3n" path="res://Graphics/Sprites/Bird Bread/BirbBack.png" id="1_vpduo"]
 [ext_resource type="Texture2D" uid="uid://2pg8hn78xlvm" path="res://Graphics/Sprites/Bird Bread/BirbWater.png" id="2_qadhh"]
 [ext_resource type="Texture2D" uid="uid://c4s3ecgm2j3bf" path="res://Graphics/Sprites/Bird Bread/BirdUp.png" id="3_4v8mx"]
 [ext_resource type="Script" path="res://Scenes/Games/Bird.gd" id="4_7e1du"]
 [ext_resource type="Texture2D" uid="uid://pl6ndrf0k456" path="res://Graphics/Sprites/Bird Bread/BreadBlur.png" id="5_jf7jb"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="7_bpcpv"]
+[ext_resource type="AudioStream" uid="uid://ix721nub5dda" path="res://Audio/SFX/BreadBird/BreadSwallow.wav" id="7_w8oc4"]
 [ext_resource type="AudioStream" uid="uid://dj6odydmmnqa1" path="res://Audio/SFX/BreadBird/BreadThrow.wav" id="8_es7ap"]
+[ext_resource type="AudioStream" uid="uid://dxx4elxw6nig5" path="res://Audio/SFX/miss1.ogg" id="8_l0vt4"]
 [ext_resource type="AudioStream" uid="uid://b7ql3tltlu5pi" path="res://Audio/SFX/RhythmTest/catch.ogg" id="9_qx61f"]
+[ext_resource type="AudioStream" uid="uid://dppb3au5et261" path="res://Audio/SFX/miss2.ogg" id="9_xl644"]
 [ext_resource type="PackedScene" uid="uid://d0gjm37w0o08j" path="res://Scenes/Textbox/Textbox.tscn" id="10_54t56"]
 [ext_resource type="PackedScene" uid="uid://bgaqwhc6e47ym" path="res://Scenes/TouchScreen/Touchscreen.tscn" id="10_y0074"]
+[ext_resource type="Script" path="res://Scenes/Games/Chart.gd" id="15_u2cj2"]
+[ext_resource type="AudioStream" uid="uid://uq0es42kihnu" path="res://Audio/SFX/BreadBird/Uhn.wav" id="16_pjacj"]
+[ext_resource type="AudioStream" uid="uid://6tvuyi57vuap" path="res://Audio/SFX/BreadBird/BreadCatch.wav" id="17_3mbdq"]
 
 [sub_resource type="GDScript" id="GDScript_vaxp6"]
 resource_name = "AnimateWater"
@@ -140,6 +147,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [0]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BirdUp/Blur:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xckja"]
 _data = {
@@ -156,41 +175,70 @@ _data = {
 resource_name = "Input"
 script/source = "extends Node
 
-var beats = []
+var beats = [[17, \"breadCatch\"], [19, \"breadCatch\"], [21, \"breadCatch\"], [23, \"breadCatch\"], [25, \"breadCatch\"], [27, \"breadCatch\"], [29, \"breadCatch\"], [31, \"breadCatch\"], [33, \"breadCatch\"], [34.5, \"breadCatch\"], [36, \"breadCatch\"], [37.5, \"breadCatch\"], [39, \"breadCatch\"], [41, \"breadCatch\"], [42.5, \"breadCatch\"], [44, \"breadCatch\"], [45.5, \"breadCatch\"], [47, \"breadCatch\"], [49, \"breadCatch\"], [51, \"breadCatch\"], [53, \"breadCatch\"], [55, \"breadCatch\"], [57, \"breadCatch\"], [59, \"breadCatch\"], [61, \"breadCatch\"], [63, \"breadCatch\"], [65, \"breadCatch\"], [66.5, \"breadCatch\"], [68, \"breadCatch\"], [69.5, \"breadCatch\"], [71, \"breadCatch\"], [73, \"breadCatch\"], [74.5, \"breadCatch\"], [76, \"breadCatch\"], [77.5, \"breadCatch\"], [79, \"breadCatch\"], [81, \"breadCatch\"], [83, \"breadCatch\"], [85, \"breadCatch\"], [87, \"breadCatch\"], [89, \"breadCatch\"], [91, \"breadCatch\"], [93, \"breadCatch\"], [95, \"breadCatch\"], [97, \"breadCatch\"], [98.5, \"breadCatch\"], [100, \"breadCatch\"], [101.5, \"breadCatch\"], [103, \"breadCatch\"], [105, \"breadCatch\"], [106.5, \"breadCatch\"], [108, \"breadCatch\"], [109.5, \"breadCatch\"], [111, \"breadCatch\"], [113, \"breadCatch\"], [115, \"breadCatch\"], [117, \"breadCatch\"], [119, \"breadCatch\"], [121, \"breadCatch\"], [123, \"breadCatch\"], [125, \"breadCatch\"], [128, \"breadCatch\"]]
 
 var indx = 0
 
-var beatTrgt : float = 4.0
+var beatTrgt : float = 17.0
 
 var offBeat : float = 0.0
 
 var status = \"Perfect\"
 
+var inputHit : bool = false
+
+var tutorial1 : bool = true
+
+var auto : bool = false
+
 # Possible Status, EarlyMiss, EarlyBarely, Perfect, LateBarely, LateMiss
+
+signal statusEmit(status)
 
 
 
 func _physics_process(delta):
-	#beatTrgt = beats[indx]
 	
-	if abs(offBeat) < 0.3:
+	if abs(offBeat) < 0.5:
 		status = \"Perfect\"
-	elif abs(offBeat) < 0.4:
+	elif abs(offBeat) < 0.8:
 		status = \"Barely\"
 	else:
 		status = \"Bad.\"
 	
-	if offBeat > 0.4:
-		indx += 1
-	
 	# also make it if the player hits anything its also a indx += 1
 	
 	_calculateOffBeat()
+	
+	
+	if auto == true and status == \"Perfect\":
+		emit_signal(\"statusEmit\",status)
 
 
 func _calculateOffBeat():
 	offBeat = GlobalValues.trueBeat - beatTrgt
 	
+	
+
+
+func _on_chart_bread_toss():
+	beatTrgt = GlobalValues.beatPos + 2
+	inputHit = false
+
+
+func _on_puck_input(input):
+	
+	
+	
+	
+	
+	if input == \"justReleased\" and tutorial1 == false:
+		emit_signal(\"statusEmit\",status)
+		inputHit = true
+		
+	
+
+
 "
 
 [sub_resource type="GDScript" id="GDScript_cx8qo"]
@@ -205,7 +253,134 @@ func _on_chart_bread_toss():
 	$Throw.play()
 "
 
+[sub_resource type="GDScript" id="GDScript_8lt8y"]
+script/source = "extends Node
+
+
+func _on_chart_bread_catch():
+	if $Throw.playing == false:
+		$Catch.play()
+		
+	else:
+		$Donk.play()
+	
+
+
+func _on_chart_bread_toss():
+	$Throw.play()
+"
+
+[sub_resource type="Shader" id="Shader_a4o62"]
+code = "shader_type canvas_item;
+
+uniform float alpha = 0.0;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment(){
+	COLOR.a = alpha;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a5h21"]
+shader = SubResource("Shader_a4o62")
+shader_parameter/alpha = 0.0
+
+[sub_resource type="Gradient" id="Gradient_rklm1"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nbayn"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8xfyh"]
+color_ramp = SubResource("Gradient_rklm1")
+noise = SubResource("FastNoiseLite_nbayn")
+
+[sub_resource type="Animation" id="Animation_l33ea"]
+resource_name = "FadeIn"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(0, 0, 0, 0, 0, 0),
+"update": 0,
+"values": [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1.8, 1.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -29.0, -29.0, -30.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Music:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_cth8m"]
+resource_name = "FadeOut"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 0.8, 0.6, 0.4, 0.2, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_i17ny"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6qg20"]
+_data = {
+"FadeIn": SubResource("Animation_l33ea"),
+"FadeOut": SubResource("Animation_cth8m"),
+"RESET": SubResource("Animation_i17ny")
+}
+
 [node name="BreadBird" type="Node2D"]
+script = ExtResource("1_1mu5p")
 
 [node name="BirbBack" type="Sprite2D" parent="."]
 texture_filter = 1
@@ -234,6 +409,16 @@ texture_filter = 1
 position = Vector2(6, -121)
 scale = Vector2(1, 2.24)
 texture = ExtResource("5_jf7jb")
+
+[node name="Swallow" type="AudioStreamPlayer" parent="BirdUp"]
+stream = ExtResource("7_w8oc4")
+volume_db = -8.0
+
+[node name="Barely" type="AudioStreamPlayer" parent="BirdUp"]
+stream = ExtResource("8_l0vt4")
+
+[node name="Miss" type="AudioStreamPlayer" parent="BirdUp"]
+stream = ExtResource("9_xl644")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -280,7 +465,51 @@ disabled = true
 [node name="Textbox" parent="." instance=ExtResource("10_54t56")]
 z_index = 1
 position = Vector2(96, 29)
-TextDoTo = Array[String](["Hey! I'm a bird!", "I'm feeling a bit parched today.", "mom", "See that coin? Try pressing on it!", ""])
-TextNotSkippable = Array[bool]([false, false, false, false, false])
+TextDoTo = Array[String](["Hey! I'm a bird!", "I'm feeling pretty hungry today.", "Open my mouth by TAPPING.", "", "Yeah that's it!", "Now here comes the tricky part.", "You have to release when I say GO!", "You have to release when I say GO!", "Like that!", "You'll figure out the rest.", ""])
+SizeToDo = Array[int]([0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 4])
+Enable = Array[bool]([false, false, false, true, false, false, false, false, false, false, false])
+TextNotSkippable = Array[bool]([false, false, false, false, false, false, false, false, false, false, false])
+
+[node name="Chart" type="Node" parent="."]
+script = ExtResource("15_u2cj2")
+
+[node name="Sound2" type="Node" parent="."]
+script = SubResource("GDScript_8lt8y")
+
+[node name="Throw" type="AudioStreamPlayer" parent="Sound2"]
+stream = ExtResource("8_es7ap")
+
+[node name="Donk" type="AudioStreamPlayer" parent="Sound2"]
+stream = ExtResource("16_pjacj")
+pitch_scale = 1.2
+
+[node name="Catch" type="AudioStreamPlayer" parent="Sound2"]
+stream = ExtResource("17_3mbdq")
+volume_db = -7.0
+
+[node name="Swallow" type="AudioStreamPlayer" parent="Sound2"]
+stream = ExtResource("7_w8oc4")
+
+[node name="FadeOut" type="Sprite2D" parent="."]
+z_index = 20
+material = SubResource("ShaderMaterial_a5h21")
+position = Vector2(184, 22)
+texture = SubResource("NoiseTexture2D_8xfyh")
+
+[node name="Fading" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6qg20")
+}
+autoplay = "FadeOut"
 
 [connection signal="beat" from="AudioStreamPlayer" to="BirdUp" method="_on_audio_stream_player_beat"]
+[connection signal="beat" from="AudioStreamPlayer" to="Chart" method="_on_audio_stream_player_beat"]
+[connection signal="statusEmit" from="Input" to="BirdUp" method="_on_input_status_emit"]
+[connection signal="input" from="Puck" to="." method="_on_puck_input"]
+[connection signal="input" from="Puck" to="BirdUp" method="_on_puck_input"]
+[connection signal="input" from="Puck" to="Input" method="_on_puck_input"]
+[connection signal="Enabled" from="Textbox" to="Puck" method="_on_textbox_enabled"]
+[connection signal="breadCatch" from="Chart" to="Input" method="_on_chart_bread_catch"]
+[connection signal="breadCatch" from="Chart" to="Sound2" method="_on_chart_bread_catch"]
+[connection signal="breadToss" from="Chart" to="Input" method="_on_chart_bread_toss"]
+[connection signal="breadToss" from="Chart" to="Sound2" method="_on_chart_bread_toss"]

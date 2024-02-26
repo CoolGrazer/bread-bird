@@ -1,8 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://cquyotwy2wum0"]
+[gd_scene load_steps=23 format=3 uid="uid://cquyotwy2wum0"]
 
+[ext_resource type="Texture2D" uid="uid://b5ydphjpa5xg6" path="res://Graphics/Sprites/Menu/Logo.png" id="1_8jiw4"]
 [ext_resource type="Shader" path="res://Shaders/Scroll.gdshader" id="2_77t1x"]
 [ext_resource type="Texture2D" uid="uid://d1ioxui7ljd25" path="res://Graphics/Sprites/Menu/BackgroundRepeat.png" id="3_t5k8y"]
-[ext_resource type="AudioStream" uid="uid://bhmdjpqbadh7v" path="res://Audio/Music/Title.mp3" id="4_1ly8a"]
+[ext_resource type="AudioStream" uid="uid://dilfd5iqm5gip" path="res://Audio/Music/Title.wav" id="4_av8pk"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="6_j56dj"]
 [ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="12_sua2s"]
 [ext_resource type="Texture2D" uid="uid://c1wsy0158dtqp" path="res://Graphics/Sprites/Menu/Play.png" id="13_txssx"]
@@ -10,16 +11,37 @@
 [ext_resource type="Texture2D" uid="uid://d2ciy378jiaiu" path="res://Graphics/Sprites/Menu/Help.png" id="15_2f45b"]
 [ext_resource type="Texture2D" uid="uid://cg0s8xqnq0jen" path="res://Graphics/Sprites/Menu/Remix.png" id="16_mdop1"]
 
+[sub_resource type="GDScript" id="GDScript_78tn1"]
+script/source = "extends Sprite2D
+
+var bopDir : int = 1
+
+
+func _physics_process(delta):
+	
+	
+	if abs(rotation_degrees) > 1.0:
+		var tween = get_tree().create_tween()
+		tween.tween_property(self,\"rotation_degrees\",0.0,0.2)
+
+
+func _on_music_beat(beat):
+	
+	if fmod(beat,2) == 0:
+		rotation_degrees = 30 * bopDir
+		bopDir *= -1
+"
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b3emo"]
 shader = ExtResource("2_77t1x")
 shader_parameter/direction = Vector2(1, -1)
-shader_parameter/scrollSpeed = 0.0
+shader_parameter/scrollSpeed = 10.0
 
 [sub_resource type="FontVariation" id="FontVariation_v2u7l"]
 base_font = ExtResource("12_sua2s")
 spacing_glyph = -6
 
-[sub_resource type="Shader" id="Shader_q36b3"]
+[sub_resource type="Shader" id="Shader_sck2l"]
 code = "shader_type canvas_item;
 
 uniform float alpha = 0.0;
@@ -39,17 +61,17 @@ void fragment(){
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_upe7w"]
-shader = SubResource("Shader_q36b3")
+shader = SubResource("Shader_sck2l")
 shader_parameter/alpha = 0.0
 
-[sub_resource type="Gradient" id="Gradient_gfdcn"]
+[sub_resource type="Gradient" id="Gradient_hp11c"]
 colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_w5113"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l4du7"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e8d5j"]
-color_ramp = SubResource("Gradient_gfdcn")
-noise = SubResource("FastNoiseLite_w5113")
+color_ramp = SubResource("Gradient_hp11c")
+noise = SubResource("FastNoiseLite_l4du7")
 
 [sub_resource type="Animation" id="Animation_l33ea"]
 resource_name = "FadeIn"
@@ -93,11 +115,39 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_cth8m"]
 resource_name = "FadeOut"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 0.8, 0.6, 0.4, 0.2, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_i17ny"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeOut:material:shader_parameter/alpha")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6qg20"]
 _data = {
 "FadeIn": SubResource("Animation_l33ea"),
-"FadeOut": SubResource("Animation_cth8m")
+"FadeOut": SubResource("Animation_cth8m"),
+"RESET": SubResource("Animation_i17ny")
 }
 
 [node name="Node2D" type="Node2D"]
@@ -115,6 +165,12 @@ handle_input_locally = false
 size = Vector2i(384, 256)
 render_target_update_mode = 4
 
+[node name="Logo" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
+texture_filter = 1
+position = Vector2(118, 121)
+texture = ExtResource("1_8jiw4")
+script = SubResource("GDScript_78tn1")
+
 [node name="BackgroundRepeat" type="Sprite2D" parent="."]
 texture_filter = 1
 texture_repeat = 2
@@ -124,7 +180,7 @@ scale = Vector2(2.01, 0.998)
 texture = ExtResource("3_t5k8y")
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_1ly8a")
+stream = ExtResource("4_av8pk")
 autoplay = true
 script = ExtResource("6_j56dj")
 bpm = 160.0
@@ -144,7 +200,6 @@ offset_top = -1.0
 offset_right = 108.0
 offset_bottom = 22.0
 theme_override_fonts/font = SubResource("FontVariation_v2u7l")
-text = "Think you can keep up with me?"
 
 [node name="Play" type="Sprite2D" parent="."]
 texture_filter = 1
@@ -155,7 +210,7 @@ script = ExtResource("14_s1t4k")
 
 [node name="Remix" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(288, 125)
+position = Vector2(561, 125)
 texture = ExtResource("16_mdop1")
 hframes = 3
 script = ExtResource("14_s1t4k")
@@ -179,3 +234,6 @@ texture = SubResource("NoiseTexture2D_e8d5j")
 libraries = {
 "": SubResource("AnimationLibrary_6qg20")
 }
+autoplay = "FadeOut"
+
+[connection signal="beat" from="Music" to="SubViewportContainer/SubViewport/Logo" method="_on_music_beat"]

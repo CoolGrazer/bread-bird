@@ -24,7 +24,6 @@ GlobalValues="*res://Scripts/GlobalValues.gd"
 window/size/viewport_width=384
 window/size/viewport_height=256
 window/stretch/mode="viewport"
-window/vsync/vsync_mode=0
 
 [input]
 
@@ -76,6 +75,8 @@ common/physics_jitter_fix=0.0
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
+textures/canvas_textures/default_texture_repeat=1
 rendering_device/driver="opengl3"
 gl_compatibility/driver="vulkan"
 renderer/rendering_method="mobile"

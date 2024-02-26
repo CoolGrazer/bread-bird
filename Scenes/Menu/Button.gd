@@ -23,11 +23,12 @@ func _process(delta):
 	#print(if me == 2 and get_parent())
 	
 	if selected == true and get_parent().get_child(2).playing == false and me == 2:
-		get_tree().change_scene_to_file("res://Scenes/Games/RhythmTest.tscn")
+		print("you wanna cook?")
+		get_tree().change_scene_to_file("res://RhythmTest.tscn")
 	
 	
-	if selected == true and get_parent().get_child(2).volume_db < -20 and me == 0:
-		get_tree().change_scene_to_file("res://Scenes/Games/BreadBird.tscn")
+	if selected == true and get_parent().get_child(2).playing == false and me == 0:
+		get_tree().change_scene_to_file("res://Scenes/Games/BreadBirdTutorial.tscn")
 	
 	pass
 	
