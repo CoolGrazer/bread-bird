@@ -70,6 +70,7 @@ func restart():
 	last_reported_beat = -1
 	beats_before_start = 0
 	measured = 0
+	seek(0.0)
 
 
 

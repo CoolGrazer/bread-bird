@@ -1,0 +1,286 @@
+[gd_scene load_steps=21 format=3 uid="uid://17vnuhtjqbn6"]
+
+[ext_resource type="Texture2D" uid="uid://dfiywg3braf3n" path="res://Graphics/Sprites/Bird Bread/BirbBack.png" id="1_vpduo"]
+[ext_resource type="Texture2D" uid="uid://2pg8hn78xlvm" path="res://Graphics/Sprites/Bird Bread/BirbWater.png" id="2_qadhh"]
+[ext_resource type="Texture2D" uid="uid://c4s3ecgm2j3bf" path="res://Graphics/Sprites/Bird Bread/BirdUp.png" id="3_4v8mx"]
+[ext_resource type="Script" path="res://Scenes/Games/Bird.gd" id="4_7e1du"]
+[ext_resource type="Texture2D" uid="uid://pl6ndrf0k456" path="res://Graphics/Sprites/Bird Bread/BreadBlur.png" id="5_jf7jb"]
+[ext_resource type="Script" path="res://Scripts/Conductor.gd" id="7_bpcpv"]
+[ext_resource type="AudioStream" uid="uid://dj6odydmmnqa1" path="res://Audio/SFX/BreadBird/BreadThrow.wav" id="8_es7ap"]
+[ext_resource type="AudioStream" uid="uid://b7ql3tltlu5pi" path="res://Audio/SFX/RhythmTest/catch.ogg" id="9_qx61f"]
+[ext_resource type="PackedScene" uid="uid://d0gjm37w0o08j" path="res://Scenes/Textbox/Textbox.tscn" id="10_54t56"]
+[ext_resource type="PackedScene" uid="uid://bgaqwhc6e47ym" path="res://Scenes/TouchScreen/Touchscreen.tscn" id="10_y0074"]
+
+[sub_resource type="GDScript" id="GDScript_vaxp6"]
+resource_name = "AnimateWater"
+script/source = "extends Sprite2D
+
+
+
+func _physics_process(delta):
+	if fmod(Engine.get_physics_frames(),7) == 0:
+		if frame < 4:
+			frame += 1
+		else:
+			frame = 0
+"
+
+[sub_resource type="Animation" id="Animation_sgcwe"]
+resource_name = "BirdHeadBonk"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BirdUp:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [7]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BirdUp/Blur:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_k4iqy"]
+resource_name = "BirdMouthOpen"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BirdUp:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_pw4qv"]
+resource_name = "BirdSwallow"
+length = 0.5
+step = 0.0625
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BirdUp:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1875),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [4, 5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BirdUp/Blur:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_50sm7"]
+resource_name = "BirdSwallowMiss"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BirdUp:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [6]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BirdUp/Blur:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_3v8gv"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BirdUp:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xckja"]
+_data = {
+"BirdHeadBonk": SubResource("Animation_sgcwe"),
+"BirdMouthOpen": SubResource("Animation_k4iqy"),
+"BirdSwallow": SubResource("Animation_pw4qv"),
+"BirdSwallowMiss": SubResource("Animation_50sm7"),
+"RESET": SubResource("Animation_3v8gv")
+}
+
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_inpev"]
+
+[sub_resource type="GDScript" id="GDScript_a4hdn"]
+resource_name = "Input"
+script/source = "extends Node
+
+var beats = []
+
+var indx = 0
+
+var beatTrgt : float = 4.0
+
+var offBeat : float = 0.0
+
+var status = \"Perfect\"
+
+# Possible Status, EarlyMiss, EarlyBarely, Perfect, LateBarely, LateMiss
+
+
+
+func _physics_process(delta):
+	#beatTrgt = beats[indx]
+	
+	if abs(offBeat) < 0.3:
+		status = \"Perfect\"
+	elif abs(offBeat) < 0.4:
+		status = \"Barely\"
+	else:
+		status = \"Bad.\"
+	
+	if offBeat > 0.4:
+		indx += 1
+	
+	# also make it if the player hits anything its also a indx += 1
+	
+	_calculateOffBeat()
+
+
+func _calculateOffBeat():
+	offBeat = GlobalValues.trueBeat - beatTrgt
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_cx8qo"]
+script/source = "extends Node
+
+
+func _on_chart_bread_catch():
+	$Catch.play()
+
+
+func _on_chart_bread_toss():
+	$Throw.play()
+"
+
+[node name="BreadBird" type="Node2D"]
+
+[node name="BirbBack" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(96, 128)
+texture = ExtResource("1_vpduo")
+hframes = 5
+
+[node name="BirbWater" type="Sprite2D" parent="."]
+z_index = 1
+texture_filter = 1
+position = Vector2(96, 128)
+texture = ExtResource("2_qadhh")
+hframes = 5
+script = SubResource("GDScript_vaxp6")
+
+[node name="BirdUp" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(90, 138)
+texture = ExtResource("3_4v8mx")
+hframes = 17
+script = ExtResource("4_7e1du")
+
+[node name="Blur" type="Sprite2D" parent="BirdUp"]
+visible = false
+texture_filter = 1
+position = Vector2(6, -121)
+scale = Vector2(1, 2.24)
+texture = ExtResource("5_jf7jb")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_xckja")
+}
+autoplay = "RESET"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+z_index = 1
+texture_filter = 1
+offset_right = 384.0
+offset_bottom = 256.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(384, 256)
+render_target_update_mode = 4
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamGenerator_inpev")
+autoplay = true
+script = ExtResource("7_bpcpv")
+bpm = 220.0
+
+[node name="Input" type="Node" parent="."]
+script = SubResource("GDScript_a4hdn")
+
+[node name="Sound" type="Node" parent="."]
+script = SubResource("GDScript_cx8qo")
+
+[node name="Throw" type="AudioStreamPlayer" parent="Sound"]
+stream = ExtResource("8_es7ap")
+
+[node name="Catch" type="AudioStreamPlayer" parent="Sound"]
+stream = ExtResource("9_qx61f")
+
+[node name="Puck" parent="." instance=ExtResource("10_y0074")]
+visible = false
+position = Vector2(253, 155)
+disabled = true
+
+[node name="Textbox" parent="." instance=ExtResource("10_54t56")]
+z_index = 1
+position = Vector2(96, 29)
+TextDoTo = Array[String](["Hey! I'm a bird!", "I'm feeling a bit parched today.", "mom", "See that coin? Try pressing on it!", ""])
+TextNotSkippable = Array[bool]([false, false, false, false, false])
+
+[connection signal="beat" from="AudioStreamPlayer" to="BirdUp" method="_on_audio_stream_player_beat"]

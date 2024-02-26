@@ -20,9 +20,15 @@ var direction : int = 1
 
 
 
+
 func _physics_process(delta):
 	
+	get_parent().get_child(3).speed_scale = GlobalValues.bpm / 120
 	
+	#if $Blur.visible == true:
+	#	$Blur.hide()
+	#else:
+	#	$Blur.show()
 	
 	position.y = (sin(abs(xVel)) * 8) + 138
 	
@@ -48,9 +54,7 @@ func _physics_process(delta):
 	
 	
 	
-	if animsPlaying == false:
-		if abs(xVel) < 1.2:
-			frame = 1
+
 	
 	position.x += xVel
 	
@@ -58,23 +62,27 @@ func _physics_process(delta):
 
 
 func _on_audio_stream_player_beat(beat):
+	
+	
+	
 	if fmod(beat,2) == 0:
 		
-		if abs(xVel) < 0.2:
-			if animsPlaying == false:
-				frame = 2
-			if position.x > 142:
-				direction = -1
-				flip_h = true
-				$Blur.position.x = -6
-			elif position.x < 52:
-				direction = 1
-				flip_h = false
-				$Blur.position.x = 6
+		if animsPlaying == false:
+			frame = 2
+		if position.x > 142:
+			direction = -1
+			flip_h = true
+			$Blur.position.x = -6
+		elif position.x < 52:
+			direction = 1
+			flip_h = false
+			$Blur.position.x = 6
 			
 			
-			xVel = 2.0 * direction
-
+		xVel = 2.0 * direction
+	elif fmod(beat,1) == 0:
+		if animsPlaying == false:
+			frame = 1
 
 
 func _mouthOpen():
@@ -85,7 +93,7 @@ func _goodBreadToss():
 	get_parent().get_child(3).stop()
 	get_parent().get_child(3).play("BirdSwallow")
 	$Blur.show()
-	xVel = direction * 3.0
+	$Swallow.play()
 
 func _barelyBreadToss():
 	get_parent().get_child(3).stop()
@@ -95,6 +103,7 @@ func _barelyBreadToss():
 	get_parent().get_child(5).get_child(0).add_child(b)
 	b.position = position + Vector2(10,-10)
 	xVel = direction * 0.5
+	$Barely.play()
 	
 	
 
@@ -106,4 +115,27 @@ func _missedBreadToss():
 	get_parent().get_child(5).get_child(0).add_child(b)
 	b.position = position + Vector2(10,-10)
 	xVel *= -1.5
+	$Miss.play()
 
+
+
+#func _on_chart_bread_toss():
+#	_mouthOpen()
+
+
+#func _on_chart_bread_catch():
+#	_barelyBreadToss()
+
+
+func _on_input_status_emit(status):
+	if status == "Perfect":
+		_goodBreadToss()
+	elif status == "Barely":
+		_barelyBreadToss()
+	else:
+		_missedBreadToss()
+
+
+func _on_puck_input(input):
+	if input == "justPressed":
+		_mouthOpen()

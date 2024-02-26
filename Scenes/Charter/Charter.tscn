@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dyeldxfh4deg1"]
+[gd_scene load_steps=7 format=3 uid="uid://dyeldxfh4deg1"]
 
 [ext_resource type="PackedScene" uid="uid://dqrufr5wbco2h" path="res://Scenes/Games/BreadBird.tscn" id="1_qppap"]
 
@@ -9,7 +9,18 @@ var t = preload(\"res://Scenes/Charter/Tick.tscn\")
 
 var posX : float = 0.0
 
+
+# Record \"And\" and then record \"Go\"
+var beat = 0
+
+
+var prepChart = []
+var throwChart = []
+
 func _ready():
+	_load()
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird.get_tree().paused = true
+	
 	for x in range(1000):
 		var tick = t.instantiate()
 		add_child(tick)
@@ -19,7 +30,14 @@ func _ready():
 
 
 func _physics_process(delta):
-	pass
+	
+	if Input.is_action_just_pressed(\"Delete\"):
+		$Sprite2D.position.x = snappedf(get_global_mouse_position().x,32.0)
+	
+	if $Camera2D/SubViewportContainer/SubViewport/BreadBird/AudioStreamPlayer.playing == true:
+		$Sprite2D.position.x = GlobalValues.trueBeat * 32
+	if Input.is_action_just_pressed(\"save\"):
+		_save()
 
 
 func _on_button_button_down():
@@ -27,6 +45,74 @@ func _on_button_button_down():
 	add_child(g)
 	g.global_position = get_global_mouse_position() + Vector2(16,0)
 	g.clicked = true
+
+
+func _on_button_2_button_down():
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird.get_tree().paused = false
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/AudioStreamPlayer.play_from_beat(($Sprite2D.position.x + 16) / 32)
+	_generateCharts()
+
+
+func _generateCharts():
+	prepChart = []
+	throwChart = []
+	
+	for x in get_tree().get_nodes_in_group(\"Chart\"):
+		prepChart.append(x._returnProperties())
+		throwChart.append([x._returnProperties()[0] + 1,\"breadCatch\"])
+		
+	
+	
+	prepChart.sort_custom(sort_ascending)
+	throwChart.sort_custom(sort_ascending)
+	
+	
+	
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/Chart.breadPrep = prepChart
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/Chart.breadTosses = throwChart
+	
+	
+	print($Camera2D/SubViewportContainer/SubViewport/BreadBird/Chart.breadPrep)
+	
+	print($Camera2D/SubViewportContainer/SubViewport/BreadBird/Chart.breadTosses)
+
+func _save():
+	var file = FileAccess.open(\"user://chartReg.save\",FileAccess.WRITE)
+	
+	
+	
+	file.store_var(prepChart)
+	file.store_var(throwChart)
+
+func _load():
+	var file = FileAccess.open(\"user://chartReg.save\",FileAccess.READ)
+	
+	prepChart = file.get_var()
+	throwChart = file.get_var()
+	
+	for x in prepChart:
+		var g = preload(\"res://Scenes/Charter/GenericBlock.tscn\").instantiate()
+		add_child(g)
+		g.clicked = false
+		g.global_position.x = (x[0] * 32) + 16
+		g.global_position.y = 199
+		
+	
+
+
+
+func sort_ascending(a, b):
+	if a[0] < b[0]:
+		return true
+	return false
+
+
+func _on_c_2_button_down():
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/AudioStreamPlayer.restart()
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/AnimationPlayer.stop()
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird.get_tree().paused = true
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/Chart.indx = 0
+	$Camera2D/SubViewportContainer/SubViewport/BreadBird/Chart.indx2 = 0
 "
 
 [sub_resource type="GDScript" id="GDScript_byssg"]
@@ -37,7 +123,18 @@ func _on_h_scroll_bar_value_changed(value):
 	position.x = value + 192
 "
 
+[sub_resource type="Gradient" id="Gradient_ef16m"]
+offsets = PackedFloat32Array(0.967532)
+colors = PackedColorArray(0, 1, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qx8bb"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mv5wg"]
+color_ramp = SubResource("Gradient_ef16m")
+noise = SubResource("FastNoiseLite_qx8bb")
+
 [node name="Charter" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,14 +143,19 @@ grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_8qc0g")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(192, 128)
+script = SubResource("GDScript_byssg")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Camera2D"]
 texture_filter = 1
 clip_contents = true
-layout_mode = 0
-offset_right = 384.0
-offset_bottom = 256.0
+offset_left = -192.0
+offset_top = -128.0
+offset_right = 192.0
+offset_bottom = 128.0
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="Camera2D/SubViewportContainer"]
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
@@ -62,18 +164,15 @@ canvas_item_default_texture_repeat = 1
 size = Vector2i(384, 256)
 render_target_update_mode = 4
 
-[node name="BreadBird" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_qppap")]
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(192, 128)
-script = SubResource("GDScript_byssg")
+[node name="BreadBird" parent="Camera2D/SubViewportContainer/SubViewport" instance=ExtResource("1_qppap")]
+process_mode = 1
 
 [node name="HScrollBar" type="HScrollBar" parent="Camera2D"]
 offset_left = -192.0
 offset_top = 116.0
 offset_right = 191.0
 offset_bottom = 124.0
-max_value = 512.0
+max_value = 4096.0
 step = 32.0
 
 [node name="Button" type="Button" parent="Camera2D"]
@@ -83,5 +182,26 @@ offset_right = 192.0
 offset_bottom = -64.0
 text = "Spawn Bread"
 
+[node name="c" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = -64.0
+offset_right = 192.0
+text = "Play"
+
+[node name="c2" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = -1.0
+offset_right = 192.0
+offset_bottom = 63.0
+text = "Stop
+"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, 191)
+scale = Vector2(0.00390625, 0.167969)
+texture = SubResource("NoiseTexture2D_mv5wg")
+
 [connection signal="value_changed" from="Camera2D/HScrollBar" to="Camera2D" method="_on_h_scroll_bar_value_changed"]
 [connection signal="button_down" from="Camera2D/Button" to="." method="_on_button_button_down"]
+[connection signal="button_down" from="Camera2D/c" to="." method="_on_button_2_button_down"]
+[connection signal="button_down" from="Camera2D/c2" to="." method="_on_c_2_button_down"]

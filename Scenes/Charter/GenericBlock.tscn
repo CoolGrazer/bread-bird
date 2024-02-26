@@ -17,7 +17,7 @@ func _physics_process(delta):
 	
 	beat = ((position.x - 16) / 32)
 	
-	print(beat)
+	
 	
 	if _mouseCloseToDimensions(32/2,24/2) and Input.is_action_just_pressed(\"Click\"):
 		clicked = true
@@ -67,8 +67,9 @@ corner_radius_bottom_left = 5
 corner_detail = 20
 anti_aliasing = false
 
-[node name="StaticBody2D" type="StaticBody2D"]
+[node name="StaticBody2D" type="StaticBody2D" groups=["Chart"]]
 script = SubResource("GDScript_pyv2o")
+property = "breadPrep"
 
 [node name="Label" type="Label" parent="."]
 texture_filter = 1

@@ -10,6 +10,7 @@ func _process(delta):
 		frame = 1
 	elif Input.is_action_just_released("Click") and not _mouseCloseToDimensions(104/2,48/2):
 		frame = 0
+		selected = false
 	elif Input.is_action_just_released("Click") and _mouseCloseToDimensions(104/2,48/2):
 		frame = 2
 		get_parent().get_child(9).play("FadeIn")
@@ -19,9 +20,9 @@ func _process(delta):
 	# Maybe add small intro if have time
 	
 	
-	print()
+	#print(if me == 2 and get_parent())
 	
-	if selected == true and get_parent().get_child(2).volume_db < -20 and me == 2:
+	if selected == true and get_parent().get_child(2).playing == false and me == 2:
 		get_tree().change_scene_to_file("res://Scenes/Games/RhythmTest.tscn")
 	
 	

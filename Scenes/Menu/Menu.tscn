@@ -153,18 +153,18 @@ texture = ExtResource("13_txssx")
 hframes = 3
 script = ExtResource("14_s1t4k")
 
-[node name="Help" type="Sprite2D" parent="."]
-texture_filter = 1
-position = Vector2(288, 200)
-texture = ExtResource("15_2f45b")
-hframes = 3
-script = ExtResource("14_s1t4k")
-me = 1
-
 [node name="Remix" type="Sprite2D" parent="."]
 texture_filter = 1
 position = Vector2(288, 125)
 texture = ExtResource("16_mdop1")
+hframes = 3
+script = ExtResource("14_s1t4k")
+me = 1
+
+[node name="Help" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(288, 200)
+texture = ExtResource("15_2f45b")
 hframes = 3
 script = ExtResource("14_s1t4k")
 me = 2
